@@ -11,7 +11,8 @@
     "lint": "yarn workspaces run lint",
     "typecheck": "yarn workspaces run typecheck",
     "test": "yarn workspaces run test",
-    "build:all": "yarn workspaces run build"
+    "build:all": "yarn workspaces run build",
+    "check:entities": "node scripts/check-entities.js"
   },
   "dependencies": {
     "react": "^19.1.1",
