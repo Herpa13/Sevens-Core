@@ -3,6 +3,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ZodValidationPipe } from '../src/zod.pipe';
+import { reset } from '@sevens/db';
 
 describe('App e2e', () => {
   let app: NestFastifyApplication;
@@ -18,8 +19,13 @@ describe('App e2e', () => {
     await app.getHttpAdapter().getInstance().ready();
   });
 
+  beforeEach(async () => {
+    await reset();
+  });
+
   afterAll(async () => {
     await app.close();
+    await reset();
   });
 
   it('GET /health', () => {
