@@ -43,4 +43,3 @@
 | Invoice | ✔️ |
 | ProductPlatformStatus | ✔️ |
 | AISettings | ✔️ |
-
