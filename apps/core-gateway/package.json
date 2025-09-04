@@ -1,0 +1,14 @@
+{
+  "name": "@sevens/core-gateway",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "echo build core-gateway",
+    "lint": "echo lint core-gateway",
+    "typecheck": "echo typecheck core-gateway",
+    "test": "echo test core-gateway",
+    "dev": "echo dev core-gateway"
+  }
+}
