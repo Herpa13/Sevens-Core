@@ -4,6 +4,9 @@
   "private": true,
   "main": "src/index.ts",
   "type": "commonjs",
+  "dependencies": {
+    "@sevens/shared": "workspace:*"
+  },
   "scripts": {
     "build": "echo build db",
     "lint": "echo lint db",

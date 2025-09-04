@@ -2,13 +2,35 @@
   "name": "@sevens/core-gateway",
   "version": "0.0.0",
   "private": true,
-  "main": "src/index.ts",
+  "main": "dist/main.js",
   "type": "commonjs",
   "scripts": {
-    "build": "echo build core-gateway",
+    "build": "tsc -p tsconfig.json",
     "lint": "echo lint core-gateway",
-    "typecheck": "echo typecheck core-gateway",
-    "test": "echo test core-gateway",
-    "dev": "echo dev core-gateway"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "jest",
+    "dev": "ts-node src/main.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "10",
+    "@nestjs/core": "10",
+    "@nestjs/platform-fastify": "10",
+    "@sevens/db": "workspace:*",
+    "@sevens/shared": "workspace:*",
+    "fastify": "^5.5.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.3.1",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.1.3",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }

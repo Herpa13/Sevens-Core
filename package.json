@@ -13,6 +13,7 @@
     "test": "yarn workspaces run test",
     "build:all": "yarn workspaces run build",
     "check:entities": "node scripts/check-entities.js"
+
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -29,6 +30,9 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
     "prisma": "^5.19.0"
+  },
+  "prisma": {
+    "seed": "node packages/db/prisma/seed.js"
   },
   "workspaces": [
     "apps/*",
