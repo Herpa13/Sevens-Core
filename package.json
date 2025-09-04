@@ -12,8 +12,8 @@
     "typecheck": "yarn workspaces run typecheck",
     "test": "yarn workspaces run test",
     "build:all": "yarn workspaces run build",
-    "check:entities": "node scripts/check-entities.js",
-    "db:seed": "prisma db seed --schema packages/db/prisma/schema.prisma"
+    "check:entities": "node scripts/check-entities.js"
+
   },
   "dependencies": {
     "react": "^19.1.1",
