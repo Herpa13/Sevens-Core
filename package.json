@@ -2,11 +2,16 @@
   "name": "v1.0-definitiva-copia-de-trabajo-para-migracion-a-backend",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "bootstrap": "yarn install",
+    "lint": "yarn workspaces run lint",
+    "typecheck": "yarn workspaces run typecheck",
+    "test": "yarn workspaces run test",
+    "build:all": "yarn workspaces run build"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -23,5 +28,10 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
     "prisma": "^5.19.0"
-  }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "yarn@4.9.4"
 }

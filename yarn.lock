@@ -1,0 +1,30 @@
+__metadata:
+  version: 5
+
+"v1.0-definitiva-copia-de-trabajo-para-migracion-a-backend@workspace:.":
+  version: 0.0.0
+  resolution: "v1.0-definitiva-copia-de-trabajo-para-migracion-a-backend@workspace:."
+  dependencies:
+    "@sevens/core-gateway": "workspace:apps/core-gateway"
+    "@sevens/db": "workspace:packages/db"
+    "@sevens/shared": "workspace:packages/shared"
+  languageName: node
+  linkType: soft
+
+"@sevens/core-gateway@workspace:apps/core-gateway":
+  version: 0.0.0
+  resolution: "@sevens/core-gateway@workspace:apps/core-gateway"
+  languageName: node
+  linkType: soft
+
+"@sevens/db@workspace:packages/db":
+  version: 0.0.0
+  resolution: "@sevens/db@workspace:packages/db"
+  languageName: node
+  linkType: soft
+
+"@sevens/shared@workspace:packages/shared":
+  version: 0.0.0
+  resolution: "@sevens/shared@workspace:packages/shared"
+  languageName: node
+  linkType: soft

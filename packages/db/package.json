@@ -1,0 +1,14 @@
+{
+  "name": "@sevens/db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "echo build db",
+    "lint": "echo lint db",
+    "typecheck": "echo typecheck db",
+    "test": "echo test db",
+    "dev": "echo dev db"
+  }
+}
