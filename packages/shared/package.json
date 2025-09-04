@@ -1,0 +1,14 @@
+{
+  "name": "@sevens/shared",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "echo build shared",
+    "lint": "echo lint shared",
+    "typecheck": "echo typecheck shared",
+    "test": "echo test shared",
+    "dev": "echo dev shared"
+  }
+}
