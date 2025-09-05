@@ -1,0 +1,21 @@
+{
+  "name": "@sevens/cdk-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "cdk": "cdk",
+    "cdk:synth": "cdk synth"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.136.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "aws-cdk": "^2.136.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
