@@ -19,7 +19,7 @@ const results = entities.map(name => {
 });
 const tableLines = ['| Entity | Schema |', '|---|---|', ...results.map(r => `| ${r.entity} | ${r.hasSchema ? '✔️' : '❌'} |`)];
 const docsPath = path.join(__dirname, '..', 'docs', 'entity_parity_matrix.md');
-fs.writeFileSync(docsPath, tableLines.join('\n'));
+fs.writeFileSync(docsPath, tableLines.join('\n') + '\n');
 console.log(tableLines.join('\n'));
 if (results.some(r => !r.hasSchema)) {
   process.exitCode = 1;
