@@ -11,7 +11,7 @@ const CompanyCreateSchema = CompanySchema.omit({ id: true });
 export class CompaniesController {
   @Get()
   async getAll(): Promise<Company[]> {
-    return getCompanies();
+    return CompanySchema.array().parse(await getCompanies());
   }
 
   @Post()
@@ -21,6 +21,6 @@ export class CompaniesController {
   ): Promise<Company> {
     const company = { id: randomUUID(), ...body };
     await addCompany(company);
-    return company;
+    return CompanySchema.parse(company);
   }
 }

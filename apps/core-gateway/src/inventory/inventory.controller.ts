@@ -12,16 +12,16 @@ import { getStock, adjustStock, getMovements } from '@sevens/db';
 export class InventoryController {
   @Get('/stock')
   async getAll(): Promise<StockItem[]> {
-    return getStock();
+    return StockItemSchema.array().parse(await getStock());
   }
 
   @Post('/stock/adjust')
   async adjust(@Body(new ZodValidationPipe(StockItemSchema)) body: StockItem): Promise<StockItem> {
-    return adjustStock(body);
+    return StockItemSchema.parse(await adjustStock(body));
   }
 
   @Get('/inventory/movements')
   async movements(): Promise<InventoryMovement[]> {
-    return getMovements();
+    return InventoryMovementSchema.array().parse(await getMovements());
   }
 }

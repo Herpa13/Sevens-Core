@@ -88,7 +88,7 @@ export async function adjustStock(adjust: StockItem): Promise<StockItem> {
 
 export async function getMovements(): Promise<InventoryMovement[]> {
   const db = await read();
-  return db.movements;
+  return db.movements.map((m) => ({ ...m, createdAt: new Date(m.createdAt) }));
 }
 
 export async function reset(): Promise<void> {

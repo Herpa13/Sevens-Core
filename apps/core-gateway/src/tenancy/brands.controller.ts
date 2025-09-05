@@ -11,7 +11,7 @@ const BrandCreateSchema = BrandSchema.omit({ id: true });
 export class BrandsController {
   @Get()
   async getAll(): Promise<Brand[]> {
-    return getBrands();
+    return BrandSchema.array().parse(await getBrands());
   }
 
   @Post()
@@ -20,6 +20,6 @@ export class BrandsController {
   ): Promise<Brand> {
     const brand = { id: randomUUID(), ...body };
     await addBrand(brand);
-    return brand;
+    return BrandSchema.parse(brand);
   }
 }
