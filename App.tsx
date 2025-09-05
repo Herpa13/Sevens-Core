@@ -15,6 +15,7 @@ import { hasPermission } from './utils/authUtils';
 import { AccessDeniedView } from './views/AccessDeniedView';
 import { resolvePrompt } from './services/placeholderService';
 import { calculateNextDueDate } from './utils/taskUtils';
+import { getHealth } from './services/coreApi';
 
 
 // Import Dashboards
@@ -110,12 +111,20 @@ const App: FC = () => {
         onConfirm: () => {},
         onDiscard: () => {},
     });
-    
+
     // This ref will hold the save function of the currently active detail view
     const activeSaveHandler = useRef<((onSuccess?: () => void) => void) | null>(null);
-    
+
     const [isTranslationPanelOpen, setIsTranslationPanelOpen] = useState(false);
     const toggleTranslationPanel = () => setIsTranslationPanelOpen(prev => !prev);
+
+    useEffect(() => {
+        getHealth().then(res => {
+            console.log('CORE health:', res);
+        }).catch(err => {
+            console.warn('CORE health check failed', err);
+        });
+    }, []);
     
     const [isInspectorOpen, setIsInspectorOpen] = useState(false);
     const toggleInspectorPanel = () => setIsInspectorOpen(prev => !prev);
