@@ -1,0 +1,48 @@
+name: core-dev-deploy
+on: [push]
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: corepack enable && yarn -v
+      - run: yarn install --frozen-lockfile
+
+      - name: Checks
+        run: |
+          yarn check:entities
+          yarn parity
+          yarn test
+          yarn build:all
+
+      - name: CDK deploy (dev)
+        run: |
+          cd infra/cdk-core
+          yarn cdk synth -c stage=dev
+          yarn cdk deploy -c stage=dev Core-Network --require-approval never
+          yarn cdk deploy -c stage=dev Core-DB --require-approval never
+          yarn cdk deploy -c stage=dev Core-API --require-approval never
+
+      - name: infra:smoke
+        run: ./scripts/infra_smoke.sh
+
+      - name: contract:drift
+        run: ./scripts/contract_drift.sh
+
+      - name: nomocks:strict
+        run: ./scripts/nomocks_strict.sh
+
+      - name: Build & upload PIM
+        run: |
+          export VITE_API_BASE="$API_URL"
+          yarn --cwd frontends/pim-frontend build
+          ./scripts/upload_pim_s3.sh
+
+      - name: e2e
+        run: yarn e2e:run
