@@ -22,6 +22,26 @@ export class CoreStack extends cdk.Stack {
     const dbSg = new ec2.SecurityGroup(this, 'CoreDbSg', { vpc });
     const proxySg = new ec2.SecurityGroup(this, 'CoreProxySg', { vpc });
 
+    // VPC Endpoints for private connectivity to AWS services
+    vpc.addGatewayEndpoint('S3Endpoint', {
+      service: ec2.GatewayVpcEndpointAwsService.S3
+    });
+
+    vpc.addInterfaceEndpoint('SecretsManagerEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
+      securityGroups: [lambdaSg]
+    });
+
+    vpc.addInterfaceEndpoint('LogsEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
+      securityGroups: [lambdaSg]
+    });
+
+    vpc.addInterfaceEndpoint('ApiGatewayEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.APIGATEWAY,
+      securityGroups: [lambdaSg]
+    });
+
     const dbSecret = new rds.DatabaseSecret(this, 'CoreDbSecret', {
       username: 'coreuser'
     });
