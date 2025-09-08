@@ -2,7 +2,7 @@
 
 ## Frontend detectado
 - **Ubicación**: la aplicación PIM actual vive en la raíz del repositorio y está construida con React + TypeScript.
-- **Arquitectura**: se apoya en componentes (`components`), vistas (`views`), datos mock (`data`) y servicios (`services`).
+- **Arquitectura**: se apoya en componentes (`components`), vistas (`views`), datos iniciales (`data`) y servicios (`services`).
 
 ## Entidades principales
 Lista derivada de `types/index.ts` (estructura `AppData`):
@@ -50,14 +50,8 @@ Lista derivada de `types/index.ts` (estructura `AppData`):
 - deliveryNotes
 - invoices
 
-## Mocks disponibles
-El fichero `data/mockData.ts` proporciona datos simulados para la mayoría de las entidades anteriores. Ejemplos destacados:
-- Productos, países, plataformas y envases.
-- Etiquetas, ingredientes y términos de traducción.
-- Recetas de contenido, plantillas de prompts y reglas de precios.
-- Usuarios, tareas, subtareas y comentarios.
-- Proyectos, entradas de base de conocimiento y plantillas de secuencia.
-- Entidades de fabricación (`purchaseOrders`, `batches`, `deliveryNotes`, `invoices`) inicializadas como listas vacías.
+## Datos iniciales
+El fichero `data/initialAppData.ts` define la estructura base con listas vacías para todas las entidades del PIM. Los datos reales se cargan desde el CORE mediante el cliente HTTP.
 
 ## Operaciones clave
 Implementadas principalmente en `services` y `utils`:
