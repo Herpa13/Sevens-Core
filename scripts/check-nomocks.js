@@ -14,8 +14,9 @@ for (const t of targets) {
 }
 
 if (output.trim()) {
-  console.warn('Mock references found:');
-  console.warn(output);
+  console.error('Mock references found:');
+  console.error(output);
+  process.exit(1);
 } else {
   console.log('No mock references found.');
 }
