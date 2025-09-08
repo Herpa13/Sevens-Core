@@ -7,7 +7,6 @@ import { DataTreeView } from '../components/common/DataTreeView';
 import { Icon } from '../components/common/Icon';
 import { FormulaEditorModal } from '../components/modals/FormulaEditorModal';
 import { resolveCellValue } from '../services/formulaService';
-import { PUBLICATION_PRESETS } from '../data/demoData';
 import { HelpModal } from '../components/modals/HelpModal';
 import { isEqual } from 'lodash-es';
 
@@ -23,7 +22,7 @@ interface PublicationTemplateDetailViewProps {
   setSaveHandler: (handler: ((onSuccess?: () => void) => void) | null) => void;
 }
 
-const PresetSelector: FC<{ onSelect: (preset: ImportExportTemplate) => void, onCancel: () => void }> = ({ onSelect, onCancel }) => (
+const PresetSelector: FC<{ presets: ImportExportTemplate[]; onSelect: (preset: ImportExportTemplate) => void; onCancel: () => void }> = ({ presets, onSelect, onCancel }) => (
     <div className="text-center p-12 bg-slate-900/50 border-2 border-dashed border-slate-700 rounded-lg">
         <h3 className="text-xl font-bold text-slate-200">Crear Nueva Plantilla</h3>
         <p className="text-slate-400 mt-2 mb-6">Empieza desde cero o usa un preset de plataforma para acelerar el proceso.</p>
@@ -36,11 +35,11 @@ const PresetSelector: FC<{ onSelect: (preset: ImportExportTemplate) => void, onC
                 Empezar desde Cero
             </button>
             <Select onChange={(e) => {
-                const preset = PUBLICATION_PRESETS.find(p => p.id === Number(e.target.value));
+                const preset = presets.find(p => p.id === Number(e.target.value));
                 if (preset) onSelect(preset);
             }} className="w-64">
                 <option value="">O selecciona un Preset...</option>
-                {PUBLICATION_PRESETS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                {presets.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </Select>
         </div>
     </div>
@@ -52,6 +51,7 @@ export const PublicationTemplateDetailView: React.FC<PublicationTemplateDetailVi
   const [editingField, setEditingField] = useState<PublicationField | null>(null);
   const [isPresetSelectorVisible, setIsPresetSelectorVisible] = useState(initialData.id === 'new');
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const presetTemplates = appData.importExportTemplates.filter(p => p.isPreset);
 
   const handleSaveClick = useCallback((onSuccess?: () => void) => {
     onSave(data);
@@ -188,7 +188,7 @@ export const PublicationTemplateDetailView: React.FC<PublicationTemplateDetailVi
 
       <div className="p-6 space-y-6">
         {isPresetSelectorVisible ? (
-             <PresetSelector onSelect={handleSelectPreset} onCancel={() => setIsPresetSelectorVisible(false)} />
+            <PresetSelector presets={presetTemplates} onSelect={handleSelectPreset} onCancel={() => setIsPresetSelectorVisible(false)} />
         ) : (
             <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

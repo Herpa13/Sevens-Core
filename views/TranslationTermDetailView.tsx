@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { TranslationTerm, LanguageCode } from '../types';
-import { DEMO_LANGUAGES } from '../data/demoData';
+import { LANGUAGES } from '../data/languages';
 import { FormField } from '../components/common/FormField';
 import { TextInput } from '../components/common/TextInput';
 import { isEqual } from 'lodash-es';
@@ -61,7 +61,7 @@ export const TranslationTermDetailView: React.FC<TranslationTermDetailViewProps>
     });
   };
 
-  const handleTranslate = async (lang: (typeof DEMO_LANGUAGES)[0]) => {
+  const handleTranslate = async (lang: (typeof LANGUAGES)[0]) => {
     const sourceText = data.spanish;
     if (!sourceText.trim()) {
       alert("El término en español no puede estar vacío.");
@@ -88,7 +88,7 @@ export const TranslationTermDetailView: React.FC<TranslationTermDetailViewProps>
       return;
     }
     setIsTranslatingAll(true);
-    for (const lang of DEMO_LANGUAGES) {
+    for (const lang of LANGUAGES) {
       if (lang.code === 'ES') continue;
       setTranslatingLang(lang.code);
       try {
@@ -129,7 +129,7 @@ export const TranslationTermDetailView: React.FC<TranslationTermDetailViewProps>
             </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          {DEMO_LANGUAGES.filter(l => l.code !== 'ES').map(lang => (
+          {LANGUAGES.filter(l => l.code !== 'ES').map(lang => (
               <FormField label={lang.name} htmlFor={lang.code} key={lang.code}>
                   <div className="flex items-center space-x-2">
                       <TextInput 
