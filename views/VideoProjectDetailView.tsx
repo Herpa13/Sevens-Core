@@ -12,7 +12,7 @@ import { SelectPromptTemplateModal } from '../components/modals/SelectPromptTemp
 import { AddSequenceModal } from '../components/modals/AddSequenceModal';
 import { SaveSequenceToLibraryModal } from '../components/modals/SaveSequenceToLibraryModal';
 import { CountrySelector } from '../components/common/CountrySelector';
-import { DEMO_LANGUAGES } from '../data/demoData';
+import { LANGUAGES } from '../data/languages';
 import { isEqual } from 'lodash-es';
 import { NotesSection } from '../components/common/NotesSection';
 
@@ -455,7 +455,7 @@ export const VideoProjectDetailView: React.FC<VideoProjectDetailViewProps> = ({ 
                             <FormField label="Idioma Principal" htmlFor="languageCode">
                                 <Select name="languageCode" value={data.languageCode || ''} onChange={handleInputChange}>
                                     <option value="">Seleccionar idioma</option>
-                                    {DEMO_LANGUAGES.map(lang => <option key={lang.code} value={lang.code}>{lang.name}</option>)}
+                                    {LANGUAGES.map(lang => <option key={lang.code} value={lang.code}>{lang.name}</option>)}
                                 </Select>
                             </FormField>
                         </div>

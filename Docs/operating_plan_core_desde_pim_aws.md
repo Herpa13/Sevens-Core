@@ -91,7 +91,7 @@
 **Entrega**: `cdk synth` y outputs con endpoints/ARNs.
 
 ### TAREA G — Conectar el PIM (sustituir mocks gradualmente)
-**Objetivo**: cliente HTTP en el PIM usando `VITE_API_BASE`; activar `check:nomocks` en **warn** hasta completar sustitución.
+**Objetivo**: cliente HTTP en el PIM usando `VITE_API_BASE`; activar `check:nomocks` en modo estricto para garantizar la ausencia de mocks.
 **Entrega**: PIM operativo contra CORE; paridad 100% `frontend↔shared`.
 
 ---
