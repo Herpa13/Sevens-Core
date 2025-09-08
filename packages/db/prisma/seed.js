@@ -51,12 +51,36 @@ async function main() {
     });
   }
 
-  await prisma.warehouse.upsert({
+  const warehouse = await prisma.warehouse.upsert({
     where: { companyId_code: { companyId: company.id, code: 'MAIN' } },
     update: {},
     create: {
       companyId: company.id,
       code: 'MAIN',
+    },
+  });
+
+  const stockItem = await prisma.stockItem.upsert({
+    where: {
+      warehouseId_variantId_lotId: {
+        warehouseId: warehouse.id,
+        variantId: 'variant-demo',
+        lotId: null,
+      },
+    },
+    update: { quantity: 100 },
+    create: {
+      warehouseId: warehouse.id,
+      variantId: 'variant-demo',
+      quantity: 100,
+    },
+  });
+
+  await prisma.inventoryMovement.create({
+    data: {
+      stockItemId: stockItem.id,
+      type: 'ADJUSTMENT',
+      quantity: 100,
     },
   });
 }
