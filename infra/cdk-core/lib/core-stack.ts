@@ -8,6 +8,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 
 export class CoreStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -95,10 +96,44 @@ export class CoreStack extends cdk.Stack {
     const queue = new sqs.Queue(this, 'CoreQueue');
     const bucket = new s3.Bucket(this, 'CoreBucket');
 
+    const dbMigrate = new codebuild.Project(this, 'DbMigrateProject', {
+      projectName: 'db-migrate',
+      vpc,
+      securityGroups: [lambdaSg],
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.SMALL
+      },
+      environmentVariables: {
+        DB_SECRET_ARN: { value: dbSecret.secretArn },
+        DATABASE_HOST: { value: proxy.endpoint }
+      },
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: {
+            commands: ['corepack enable', 'yarn install --immutable']
+          },
+          build: {
+            commands: [
+              'SECRET=$(aws secretsmanager get-secret-value --secret-id $DB_SECRET_ARN --query SecretString --output text)',
+              'USER=$(echo $SECRET | jq -r .username)',
+              'PASS=$(echo $SECRET | jq -r .password)',
+              'export DATABASE_URL="postgresql://$USER:$PASS@$DATABASE_HOST:5432/postgres"',
+              'npx prisma migrate deploy --schema packages/db/prisma/schema.prisma'
+            ]
+          }
+        }
+      })
+    });
+
+    dbSecret.grantRead(dbMigrate);
+
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url });
     new cdk.CfnOutput(this, 'DbInstanceArn', { value: db.instanceArn });
     new cdk.CfnOutput(this, 'RdsProxyEndpoint', { value: proxy.endpoint });
     new cdk.CfnOutput(this, 'QueueArn', { value: queue.queueArn });
     new cdk.CfnOutput(this, 'BucketArn', { value: bucket.bucketArn });
+    new cdk.CfnOutput(this, 'DbMigrateProjectName', { value: dbMigrate.projectName });
   }
 }
