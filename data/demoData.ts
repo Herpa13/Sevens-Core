@@ -4,7 +4,7 @@
 
 import type { AppData, LanguageCode, AmazonInfographic, Note, AmazonBulletPoint, ImportExportTemplate, PromptTemplate, Pvpr, PricingRule, User, Task, TaskComment, TaskSchema, Subtask, Proyecto, KnowledgeBaseEntry, KnowledgeBaseUsage, SequenceTemplate, VideoProject, Product, Country, Platform, Envase, Video, Ingredient, MediaAsset, VideoCompositionTemplate, Etiqueta, TranslationTerm, AmazonFlashDeal } from '../types/index';
 
-export const MOCK_LANGUAGES: { name: string; code: LanguageCode }[] = [
+export const DEMO_LANGUAGES: { name: string; code: LanguageCode }[] = [
     { name: 'Español', code: 'ES' },
     { name: 'Italiano', code: 'IT' },
     { name: 'Francés', code: 'FR' },
@@ -46,7 +46,7 @@ export const PUBLICATION_PRESETS: ImportExportTemplate[] = [
     }
 ];
 
-const MOCK_PROMPT_TEMPLATES: PromptTemplate[] = [
+const DEMO_PROMPT_TEMPLATES: PromptTemplate[] = [
     {
         id: 1,
         name: 'Revisión Estándar (Comercial)',
@@ -147,7 +147,7 @@ El resultado debe ser atractivo, claro y mantener el sentido original del produc
     }
 ];
 
-const MOCK_PVPRS: Pvpr[] = [
+const DEMO_PVPRS: Pvpr[] = [
     { id: 1, productId: 1, countryId: 1, amount: 19.99, currency: 'EUR' },
     { id: 2, productId: 1, countryId: 2, amount: 20.99, currency: 'EUR' },
     { id: 3, productId: 1, countryId: 3, amount: 21.50, currency: 'EUR' },
@@ -156,7 +156,7 @@ const MOCK_PVPRS: Pvpr[] = [
     { id: 6, productId: 4, countryId: 1, amount: 29.99, currency: 'EUR' },
 ];
 
-const MOCK_PRICING_RULES: PricingRule[] = [
+const DEMO_PRICING_RULES: PricingRule[] = [
     {
         id: 1,
         name: 'Precio Estándar - Usar PVPR',
@@ -175,7 +175,7 @@ const MOCK_PRICING_RULES: PricingRule[] = [
     }
 ];
 
-const MOCK_AMAZON_FLASH_DEALS: AmazonFlashDeal[] = [
+const DEMO_AMAZON_FLASH_DEALS: AmazonFlashDeal[] = [
     {
         id: 1,
         name: 'Oferta Flash Vitamina C - Prime Day',
@@ -204,13 +204,13 @@ const MOCK_AMAZON_FLASH_DEALS: AmazonFlashDeal[] = [
     },
 ];
 
-const MOCK_USERS: User[] = [
+const DEMO_USERS: User[] = [
     { id: 1, name: 'Admin Sistema', email: 'admin@example.com', password: 'password', role: 'Administrador' },
     { id: 2, name: 'Sara', email: 'sara@example.com', password: 'password', role: 'Nivel 2' },
     { id: 3, name: 'Sonia', email: 'sonia@example.com', password: 'password', role: 'Nivel 3', allowedViews: ['products', 'tasks', 'etiquetas', 'productNotifications', 'notifications'] },
 ];
 
-const MOCK_TASKS: Task[] = [
+const DEMO_TASKS: Task[] = [
     {
         id: 1,
         name: 'Revisar y optimizar contenido Amazon ES para Vitamina C',
@@ -275,19 +275,19 @@ const MOCK_TASKS: Task[] = [
     }
 ];
 
-const MOCK_TASK_COMMENTS: TaskComment[] = [
+const DEMO_TASK_COMMENTS: TaskComment[] = [
     { id: 1, taskId: 1, authorId: 1, text: 'He asignado esto a @Sara. Prioridad alta, por favor, centrarse en los bullet points.', createdAt: '2024-07-20T10:05:00Z' },
     { id: 2, taskId: 1, authorId: 2, text: 'Recibido. Empezaré con el análisis de keywords de la competencia hoy mismo.', createdAt: '2024-07-20T11:30:00Z' },
 ];
 
-const MOCK_SUBTASKS: Subtask[] = [
+const DEMO_SUBTASKS: Subtask[] = [
     { id: 1, taskId: 2, name: 'Revisar composición anterior vs nueva', isCompleted: true, assigneeId: 3 },
     { id: 2, taskId: 2, name: 'Actualizar tabla nutricional en todos los idiomas', isCompleted: true, assigneeId: 3, dueDate: '2024-08-05' },
     { id: 3, taskId: 2, name: 'Crear briefing para equipo de diseño', isCompleted: false, assigneeId: 2 },
     { id: 4, taskId: 2, name: 'Enviar arte final a imprenta', isCompleted: false, assigneeId: 1, dueDate: '2024-08-10' },
 ];
 
-const MOCK_TASK_SCHEMAS: TaskSchema[] = [
+const DEMO_TASK_SCHEMAS: TaskSchema[] = [
     {
         id: 2,
         name: 'Lanzamiento de Nuevo Producto',
@@ -342,7 +342,7 @@ const MOCK_TASK_SCHEMAS: TaskSchema[] = [
     }
 ];
 
-const MOCK_PROYECTOS: Proyecto[] = [
+const DEMO_PROYECTOS: Proyecto[] = [
     {
         id: 1,
         name: 'Proyecto Interno Q3',
@@ -353,7 +353,7 @@ const MOCK_PROYECTOS: Proyecto[] = [
     }
 ];
 
-const MOCK_KNOWLEDGE_BASE_ENTRIES: KnowledgeBaseEntry[] = [
+const DEMO_KNOWLEDGE_BASE_ENTRIES: KnowledgeBaseEntry[] = [
     {
         id: 1,
         title: 'Advertencia General Suplementos Alimenticios ES',
@@ -596,7 +596,7 @@ Para entender cómo se conectan los módulos, aquí tienes tres flujos de trabaj
     }
 ];
 
-const MOCK_KNOWLEDGE_BASE_USAGES: KnowledgeBaseUsage[] = [
+const DEMO_KNOWLEDGE_BASE_USAGES: KnowledgeBaseUsage[] = [
     {
         id: 1,
         entryId: 1,
@@ -608,7 +608,7 @@ const MOCK_KNOWLEDGE_BASE_USAGES: KnowledgeBaseUsage[] = [
     }
 ];
 
-const MOCK_SEQUENCE_TEMPLATES: SequenceTemplate[] = [
+const DEMO_SEQUENCE_TEMPLATES: SequenceTemplate[] = [
     {
         id: 1,
         name: 'Intro - Revelación con Desenfoque',
@@ -632,7 +632,7 @@ const MOCK_SEQUENCE_TEMPLATES: SequenceTemplate[] = [
     },
 ];
 
-const MOCK_VIDEO_COMPOSITION_TEMPLATES: VideoCompositionTemplate[] = [
+const DEMO_VIDEO_COMPOSITION_TEMPLATES: VideoCompositionTemplate[] = [
     {
         id: 1,
         name: 'Plantilla Rápida para TikTok',
@@ -647,7 +647,7 @@ const MOCK_VIDEO_COMPOSITION_TEMPLATES: VideoCompositionTemplate[] = [
     }
 ];
 
-const MOCK_MEDIA_ASSETS: MediaAsset[] = [
+const DEMO_MEDIA_ASSETS: MediaAsset[] = [
     {
         id: 1,
         name: 'CTA Final con Logo Animado',
@@ -669,7 +669,7 @@ const MOCK_MEDIA_ASSETS: MediaAsset[] = [
     }
 ];
 
-const MOCK_VIDEO_PROJECTS: VideoProject[] = [
+const DEMO_VIDEO_PROJECTS: VideoProject[] = [
     {
         id: 1,
         name: 'Lanzamiento Vitamina C en TikTok',
@@ -748,7 +748,7 @@ const MOCK_VIDEO_PROJECTS: VideoProject[] = [
     }
 ];
 
-const MOCK_PRODUCTS: Product[] = [
+const DEMO_PRODUCTS: Product[] = [
     {
         id: 1, name: 'Vitamina C 1000mg', sku: 'VTC-1000-01', marca: 'WellnessPro', status: 'Activo', format: 'Cápsula(s)', asin: 'B08XJ9J8XF', ean: '843658992011', units: 90,
         mainImageUrl: 'https://images.unsplash.com/photo-1607620849332-4e4d5d4da2de?q=80&w=2592&auto=format&fit=crop',
@@ -915,7 +915,7 @@ const MOCK_PRODUCTS: Product[] = [
     { id: 2, name: 'Omega 3', sku: 'OMG-3-01', marca: 'WellnessPro', status: 'Activo', amazonContents: [], videoIds: [] },
     { id: 4, name: 'Colágeno Marino', sku: 'COL-M-01', marca: 'WellnessPro', status: 'Activo', amazonContents: [], videoIds: [] }
 ];
-const MOCK_COUNTRIES: Country[] = [
+const DEMO_COUNTRIES: Country[] = [
     { id: 1, name: 'España', iso: 'ES' },
     { id: 2, name: 'Italia', iso: 'IT' },
     { id: 3, name: 'Francia', iso: 'FR' },
@@ -927,18 +927,18 @@ const MOCK_COUNTRIES: Country[] = [
     { id: 9, name: 'Reino Unido', iso: 'EN' },
     { id: 10, name: 'Turquía', iso: 'TR' },
 ];
-const MOCK_PLATFORMS: Platform[] = [
+const DEMO_PLATFORMS: Platform[] = [
     { id: 1, name: 'Amazon ES', countryId: 1, type: 'Marketplace', status: 'Activa', shipsBy: 'Platform' },
     { id: 2, name: 'Amazon IT', countryId: 2, type: 'Marketplace', status: 'Activa', shipsBy: 'Platform' },
 ];
-const MOCK_ENVASES: Envase[] = [
+const DEMO_ENVASES: Envase[] = [
     { id: 1, name: 'Bote Estándar 120cc', tipo: 'Bote', fotoUrl: 'https://images.unsplash.com/photo-1607620849332-4e4d5d4da2de?q=80&w=200', height: 110, width: 60, peso: 25, capacidad: '120cc / 90 cápsulas' },
 ];
-const MOCK_VIDEOS: Video[] = [
+const DEMO_VIDEOS: Video[] = [
     { id: 1, name: 'Video Vitamina C', url: '#', platform: 'TikTok', type: 'Producto', duration: 60, status: 'Publicado', countryId: 1 },
     { id: 2, name: 'Video Marca', url: '#', platform: 'YouTube', type: 'Marca', duration: 120, status: 'Publicado', countryId: 1 },
 ];
-const MOCK_INGREDIENTS: Ingredient[] = [
+const DEMO_INGREDIENTS: Ingredient[] = [
     { 
         id: 1, 
         latinName: 'Vitamina C', 
@@ -959,7 +959,7 @@ const MOCK_INGREDIENTS: Ingredient[] = [
         ] 
     },
 ];
-const MOCK_ETIQUETAS: Etiqueta[] = [
+const DEMO_ETIQUETAS: Etiqueta[] = [
     {
         id: 1,
         identifier: 'VTC-1000-01-v01',
@@ -1007,7 +1007,7 @@ const MOCK_ETIQUETAS: Etiqueta[] = [
         ingredientSnapshot: []
     }
 ];
-const MOCK_TRANSLATION_TERMS: TranslationTerm[] = [
+const DEMO_TRANSLATION_TERMS: TranslationTerm[] = [
     {
         id: 1,
         spanish: 'Ingredientes',
@@ -1085,17 +1085,17 @@ const MOCK_TRANSLATION_TERMS: TranslationTerm[] = [
     }
 ];
 
-export const MOCK_DATA: AppData = {
-    products: MOCK_PRODUCTS,
-    countries: MOCK_COUNTRIES,
-    platforms: MOCK_PLATFORMS,
+export const DEMO_DATA: AppData = {
+    products: DEMO_PRODUCTS,
+    countries: DEMO_COUNTRIES,
+    platforms: DEMO_PLATFORMS,
     tickets: [],
-    envases: MOCK_ENVASES,
-    etiquetas: MOCK_ETIQUETAS,
-    videos: MOCK_VIDEOS,
-    ingredients: MOCK_INGREDIENTS,
+    envases: DEMO_ENVASES,
+    etiquetas: DEMO_ETIQUETAS,
+    videos: DEMO_VIDEOS,
+    ingredients: DEMO_INGREDIENTS,
     notes: [],
-    translationTerms: MOCK_TRANSLATION_TERMS,
+    translationTerms: DEMO_TRANSLATION_TERMS,
     productNotifications: [],
     productPlatformStatuses: [],
     competitorBrands: [],
@@ -1106,30 +1106,30 @@ export const MOCK_DATA: AppData = {
         { id: 1, name: 'Título Estándar', target: 'title', parts: [] },
         { id: 2, name: 'Descripción Estándar', target: 'description', parts: [] },
     ],
-    promptTemplates: MOCK_PROMPT_TEMPLATES,
+    promptTemplates: DEMO_PROMPT_TEMPLATES,
     logs: [],
     importExportTemplates: PUBLICATION_PRESETS,
     importJobs: [],
     exportJobs: [],
     importJobChangeLogs: [],
     aiSettings: { globalTranslationRules: 'No traducir la marca "WellnessPro".' },
-    pvprs: MOCK_PVPRS,
+    pvprs: DEMO_PVPRS,
     prices: [],
-    pricingRules: MOCK_PRICING_RULES,
+    pricingRules: DEMO_PRICING_RULES,
     priceHistoryLogs: [],
-    amazonFlashDeals: MOCK_AMAZON_FLASH_DEALS,
-    users: MOCK_USERS,
-    tasks: MOCK_TASKS,
-    taskComments: MOCK_TASK_COMMENTS,
-    taskSchemas: MOCK_TASK_SCHEMAS,
-    subtasks: MOCK_SUBTASKS,
-    proyectos: MOCK_PROYECTOS,
-    knowledgeBaseEntries: MOCK_KNOWLEDGE_BASE_ENTRIES,
-    knowledgeBaseUsages: MOCK_KNOWLEDGE_BASE_USAGES,
-    sequenceTemplates: MOCK_SEQUENCE_TEMPLATES,
-    videoCompositionTemplates: MOCK_VIDEO_COMPOSITION_TEMPLATES,
-    videoProjects: MOCK_VIDEO_PROJECTS,
-    mediaAssets: MOCK_MEDIA_ASSETS,
+    amazonFlashDeals: DEMO_AMAZON_FLASH_DEALS,
+    users: DEMO_USERS,
+    tasks: DEMO_TASKS,
+    taskComments: DEMO_TASK_COMMENTS,
+    taskSchemas: DEMO_TASK_SCHEMAS,
+    subtasks: DEMO_SUBTASKS,
+    proyectos: DEMO_PROYECTOS,
+    knowledgeBaseEntries: DEMO_KNOWLEDGE_BASE_ENTRIES,
+    knowledgeBaseUsages: DEMO_KNOWLEDGE_BASE_USAGES,
+    sequenceTemplates: DEMO_SEQUENCE_TEMPLATES,
+    videoCompositionTemplates: DEMO_VIDEO_COMPOSITION_TEMPLATES,
+    videoProjects: DEMO_VIDEO_PROJECTS,
+    mediaAssets: DEMO_MEDIA_ASSETS,
 // FIX: Added empty arrays for new manufacturing entities to satisfy the AppData type.
     purchaseOrders: [],
     batches: [],

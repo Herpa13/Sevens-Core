@@ -1359,7 +1359,7 @@ export const ProductDetailView: FC<ProductDetailViewProps> = ({ initialData, onS
     onSuccess?: () => void;
   }>({ isOpen: false });
 
-  const currentUser = appData.users.find(u => u.role === 'Administrador'); // Mock current user for now
+  const currentUser = appData.users.find(u => u.role === 'Administrador'); // Use first admin user for now
 
   const handleConfirmSaveVersion = (reason: string) => {
     setIsSaving(true);

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, FC, useEffect, useRef } from 'react';
 // FIX: Corrected typo in type import from 'Etiquette' to 'Etiqueta'.
 import type { AppData, Product, Country, Platform, CustomerSupportTicket, Envase, Etiqueta, Video, Ingredient, Note, TranslationTerm, ProductNotification, CompetitorBrand, CompetitorProduct, NoteAttachment, NoteEntityType, ContentRecipe, LoggedEntityType, LogEntry, PromptTemplate, ImportExportTemplate, ImportJob, ImportJobChangeLog, ShopifyContent, Layer2Content, PublicationField, AmazonContent, AmazonBulletPoint, AmazonInfographic, ImportJobChangeLogEntry, ExportJob, ChangeDetail, AISettings, Pvpr, PricingRule, Price, PriceHistoryLog, User, Task, TaskComment, TaskSchema, TemplateTask, Subtask, Proyecto, KnowledgeBaseEntry, KnowledgeBaseUsage, SequenceTemplate, VideoProject, MediaAsset, VideoCompositionTemplate, ProjectSequence, Entity, EntityType, AmazonFlashDeal, LinkedEntity } from './types/index';
-import { MOCK_DATA } from './data/mockData';
+import { DEMO_DATA } from './data/demoData';
 import { Sidebar } from './components/layout/Sidebar';
 // FIX: Import only the component from DetailView, not the types.
 import { DetailView } from './components/layout/DetailView';
@@ -95,7 +95,7 @@ type UnsavedChangesModalState = {
 }
 
 const App: FC = () => {
-    const [appData, setAppData] = useState<AppData>(MOCK_DATA);
+    const [appData, setAppData] = useState<AppData>(DEMO_DATA);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [activeView, setActiveView] = useState<ActiveView | null>(null);

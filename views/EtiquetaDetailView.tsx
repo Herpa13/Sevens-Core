@@ -1,7 +1,7 @@
 import React, { useState, useMemo, FC, useEffect, useCallback } from 'react';
 // FIX: Import Entity and EntityType from their canonical source
 import type { Etiqueta, AppData, Product, LabelContent, DocumentAttachment, Task, KnowledgeBaseUsage, LanguageCode, EtiquetaStatus, ProductNotification, LabelIngredient, Entity, EntityType, TranslationTerm, LabelIngredientTranslation } from '../types';
-import { MOCK_LANGUAGES } from '../data/mockData';
+import { DEMO_LANGUAGES } from '../data/demoData';
 import { FormField } from '../components/common/FormField';
 import { TextInput } from '../components/common/TextInput';
 import { Select } from '../components/common/Select';
@@ -150,7 +150,7 @@ interface MainTabProps {
 }
 
 const MainTab: FC<MainTabProps> = ({ data, setData, appData, onUsageAdd, onEntitySave }) => {
-    const [activeLang, setActiveLang] = useState<LanguageCode>(MOCK_LANGUAGES[0].code);
+    const [activeLang, setActiveLang] = useState<LanguageCode>(DEMO_LANGUAGES[0].code);
     const [snapshotLang, setSnapshotLang] = useState<LanguageCode>('ES');
     const [isTranslating, setIsTranslating] = useState(false);
     const [expandedIngredientId, setExpandedIngredientId] = useState<number | null>(null);
@@ -230,7 +230,7 @@ const MainTab: FC<MainTabProps> = ({ data, setData, appData, onUsageAdd, onEntit
         
         setIsTranslating(true);
         try {
-            for (const lang of MOCK_LANGUAGES) {
+            for (const lang of DEMO_LANGUAGES) {
                 if (lang.code === 'ES') continue;
 
                 const productNamePromise = ai.models.generateContent({ model: 'gemini-2.5-flash', contents: `Traduce a ${lang.name}: "${spanishContent.productName}"` });
@@ -261,7 +261,7 @@ const MainTab: FC<MainTabProps> = ({ data, setData, appData, onUsageAdd, onEntit
             const ingredient = appData.ingredients.find(i => i.id === item.ingredientId);
             if (!ingredient) return null;
 
-            const translations: LabelIngredientTranslation[] = MOCK_LANGUAGES.map(lang => {
+            const translations: LabelIngredientTranslation[] = DEMO_LANGUAGES.map(lang => {
                 const country = appData.countries.find(c => c.iso === lang.code);
                 const countryDetail = ingredient.countryDetails.find(cd => cd.countryId === country?.id);
                 const vrnDetail = item.vrnPercentages.find(vp => vp.countryId === country?.id);
@@ -383,7 +383,7 @@ const MainTab: FC<MainTabProps> = ({ data, setData, appData, onUsageAdd, onEntit
                     <div className="flex justify-between items-center mb-4">
                         <div className="border-b border-slate-700">
                             <nav className="-mb-px flex space-x-4">
-                                {MOCK_LANGUAGES.map(lang => (
+                                {DEMO_LANGUAGES.map(lang => (
                                     <button key={lang.code} onClick={() => setActiveLang(lang.code)}
                                         className={`py-2 px-3 font-medium text-sm rounded-t-lg whitespace-nowrap ${activeLang === lang.code ? 'border-b-2 border-cyan-500 text-cyan-400' : 'text-slate-400 hover:text-slate-200'}`}>
                                         {lang.name}
@@ -427,7 +427,7 @@ const MainTab: FC<MainTabProps> = ({ data, setData, appData, onUsageAdd, onEntit
                 <div className="p-4">
                     <div className="flex justify-end items-center mb-4 space-x-2">
                         <Select value={snapshotLang} onChange={e => setSnapshotLang(e.target.value as LanguageCode)} className="w-48">
-                            {MOCK_LANGUAGES.map(lang => (
+                            {DEMO_LANGUAGES.map(lang => (
                                 <option key={lang.code} value={lang.code}>{lang.name}</option>
                             ))}
                         </Select>
