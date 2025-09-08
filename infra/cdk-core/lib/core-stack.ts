@@ -9,6 +9,8 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 
 export class CoreStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -96,6 +98,14 @@ export class CoreStack extends cdk.Stack {
     const queue = new sqs.Queue(this, 'CoreQueue');
     const bucket = new s3.Bucket(this, 'CoreBucket');
 
+    const openApiBucket = new s3.Bucket(this, 'OpenApiBucket', {
+      versioned: true,
+    });
+
+    const openApiDistribution = new cloudfront.Distribution(this, 'OpenApiDistribution', {
+      defaultBehavior: { origin: new origins.S3Origin(openApiBucket) },
+    });
+
     const dbMigrate = new codebuild.Project(this, 'DbMigrateProject', {
       projectName: 'db-migrate',
       vpc,
@@ -129,11 +139,42 @@ export class CoreStack extends cdk.Stack {
 
     dbSecret.grantRead(dbMigrate);
 
+    const openApiPublish = new codebuild.Project(this, 'OpenApiPublishProject', {
+      projectName: 'openapi-publish',
+      vpc,
+      securityGroups: [lambdaSg],
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.SMALL
+      },
+      environmentVariables: {
+        OPENAPI_BUCKET: { value: openApiBucket.bucketName }
+      },
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: {
+            commands: ['corepack enable', 'yarn install --immutable']
+          },
+          build: {
+            commands: [
+              'yarn workspace @sevens/core-gateway openapi',
+              'aws s3 cp apps/core-gateway/openapi.json s3://$OPENAPI_BUCKET/openapi.json'
+            ]
+          }
+        }
+      })
+    });
+
+    openApiBucket.grantReadWrite(openApiPublish);
+
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url });
     new cdk.CfnOutput(this, 'DbInstanceArn', { value: db.instanceArn });
     new cdk.CfnOutput(this, 'RdsProxyEndpoint', { value: proxy.endpoint });
     new cdk.CfnOutput(this, 'QueueArn', { value: queue.queueArn });
     new cdk.CfnOutput(this, 'BucketArn', { value: bucket.bucketArn });
     new cdk.CfnOutput(this, 'DbMigrateProjectName', { value: dbMigrate.projectName });
+    new cdk.CfnOutput(this, 'OpenApiUrl', { value: `https://${openApiDistribution.domainName}/openapi.json` });
+    new cdk.CfnOutput(this, 'OpenApiPublishProjectName', { value: openApiPublish.projectName });
   }
 }
