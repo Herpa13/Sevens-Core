@@ -10,9 +10,10 @@
     "bootstrap": "yarn install",
     "lint": "yarn workspaces run lint",
     "typecheck": "yarn workspaces run typecheck",
-    "test": "yarn workspaces run test",
+    "test": "vitest run",
     "build:all": "yarn workspaces run build",
     "check:entities": "node scripts/check-entities.js",
+    "check:nomocks": "node scripts/check-nomocks.js",
     "cdk:synth": "yarn workspace @sevens/cdk-core cdk:synth"
   },
   "dependencies": {
@@ -29,7 +30,8 @@
     "@types/node": "^22.14.0",
     "prisma": "^5.19.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vitest": "^1.6.0"
   },
   "prisma": {
     "seed": "node packages/db/prisma/seed.js"

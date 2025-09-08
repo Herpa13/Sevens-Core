@@ -1,5 +1,5 @@
 import type { ChangeDetail, LoggedEntityType, AppData, Entity, EntityType } from '../types';
-import { MOCK_LANGUAGES } from '../data/mockData';
+import { DEMO_LANGUAGES } from '../data/demoData';
 
 const FIELD_NAMES: Record<string, string> = {
     name: 'General - Nombre',
@@ -105,7 +105,7 @@ const deepDiff = (path: string, obj1: any, obj2: any, changes: ChangeDetail[], a
                 }
              } else if (currentPath.endsWith('.translations')) {
                  const parentPath = currentPath.replace('.translations', '');
-                 MOCK_LANGUAGES.forEach(lang => {
+                 DEMO_LANGUAGES.forEach(lang => {
                     const item1 = (val1 || []).find(t => t.lang === lang.code);
                     const item2 = (val2 || []).find(t => t.lang === lang.code);
                     if (JSON.stringify(item1) !== JSON.stringify(item2)) {

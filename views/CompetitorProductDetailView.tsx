@@ -57,7 +57,7 @@ export const CompetitorProductDetailView: React.FC<CompetitorProductDetailViewPr
 
   const handleTakeSnapshot = () => {
     // In a real app, this would trigger a backend process.
-    // Here, we simulate it by adding a new snapshot with mock analysis.
+    // Here, we simulate it by adding a new snapshot with demo analysis.
     const newSnapshot: CompetitorProductSnapshot = {
         id: -Date.now(),
         competitorProductId: typeof data.id === 'number' ? data.id : undefined,

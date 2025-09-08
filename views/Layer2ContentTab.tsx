@@ -6,7 +6,7 @@ import { TextArea } from '../components/common/TextArea';
 import { Icon } from '../components/common/Icon';
 import { CollapsibleSection } from '../components/common/CollapsibleSection';
 import { ai } from '../services/geminiService';
-import { MOCK_LANGUAGES } from '../data/mockData';
+import { DEMO_LANGUAGES } from '../data/demoData';
 
 
 interface Layer2ContentTabProps {

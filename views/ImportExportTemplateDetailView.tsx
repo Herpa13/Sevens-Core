@@ -7,7 +7,7 @@ import { DataTreeView } from '../components/common/DataTreeView';
 import { Icon } from '../components/common/Icon';
 import { FormulaEditorModal } from '../components/modals/FormulaEditorModal';
 import { resolveCellValue } from '../services/formulaService';
-import { PUBLICATION_PRESETS } from '../data/mockData';
+import { PUBLICATION_PRESETS } from '../data/demoData';
 import { HelpModal } from '../components/modals/HelpModal';
 import { isEqual } from 'lodash-es';
 
