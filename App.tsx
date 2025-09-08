@@ -15,7 +15,7 @@ import { hasPermission } from './utils/authUtils';
 import { AccessDeniedView } from './views/AccessDeniedView';
 import { resolvePrompt } from './services/placeholderService';
 import { calculateNextDueDate } from './utils/taskUtils';
-import { getHealth } from './services/coreApi';
+import { getHealth, getAppData } from './services/coreApi';
 
 
 // Import Dashboards
@@ -123,6 +123,14 @@ const App: FC = () => {
             console.log('CORE health:', res);
         }).catch(err => {
             console.warn('CORE health check failed', err);
+        });
+    }, []);
+
+    useEffect(() => {
+        getAppData().then(data => {
+            setAppData(data);
+        }).catch(err => {
+            console.warn('Falling back to DEMO_DATA, app data fetch failed', err);
         });
     }, []);
     
