@@ -18,12 +18,12 @@ export class CoreStack extends cdk.Stack {
       natGateways: 0
     });
 
-    const dbSecret = new secretsmanager.Secret(this, 'CoreDbSecret', {
-      secretName: 'core-db-credentials',
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({ username: 'coreuser' }),
-        generateStringKey: 'password'
-      }
+    const lambdaSg = new ec2.SecurityGroup(this, 'CoreLambdaSg', { vpc });
+    const dbSg = new ec2.SecurityGroup(this, 'CoreDbSg', { vpc });
+    const proxySg = new ec2.SecurityGroup(this, 'CoreProxySg', { vpc });
+
+    const dbSecret = new rds.DatabaseSecret(this, 'CoreDbSecret', {
+      username: 'coreuser'
     });
 
     const db = new rds.DatabaseInstance(this, 'CoreDb', {
@@ -33,21 +33,40 @@ export class CoreStack extends cdk.Stack {
       vpc,
       credentials: rds.Credentials.fromSecret(dbSecret),
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
-      publiclyAccessible: false
+      publiclyAccessible: false,
+      multiAz: true,
+      securityGroups: [dbSg]
     });
+
+    dbSecret.addRotationSchedule('CoreDbRotation', {
+      hostedRotation: secretsmanager.HostedRotation.postgreSqlSingleUser({
+        vpc
+      })
+    });
+
+    const proxy = db.addProxy('CoreDbProxy', {
+      secrets: [dbSecret],
+      vpc,
+      securityGroups: [proxySg]
+    });
+
+    db.connections.allowFrom(proxy, ec2.Port.tcp(5432));
+    proxy.connections.allowFrom(lambdaSg, ec2.Port.tcp(5432));
 
     const fn = new lambda.Function(this, 'CoreGatewayFn', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
       code: lambda.Code.fromInline('exports.handler=async()=>({statusCode:200,body:"ok"});'),
       vpc,
+      securityGroups: [lambdaSg],
       environment: {
-        DATABASE_HOST: db.instanceEndpoint.hostname,
+        DATABASE_HOST: proxy.endpoint,
         DB_SECRET_ARN: dbSecret.secretArn
       }
     });
 
     dbSecret.grantRead(fn);
+    proxy.grantConnect(fn, 'coreuser');
 
     const api = new apigateway.LambdaRestApi(this, 'CoreGatewayApi', {
       handler: fn
@@ -58,6 +77,7 @@ export class CoreStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url });
     new cdk.CfnOutput(this, 'DbInstanceArn', { value: db.instanceArn });
+    new cdk.CfnOutput(this, 'RdsProxyEndpoint', { value: proxy.endpoint });
     new cdk.CfnOutput(this, 'QueueArn', { value: queue.queueArn });
     new cdk.CfnOutput(this, 'BucketArn', { value: bucket.bucketArn });
   }
