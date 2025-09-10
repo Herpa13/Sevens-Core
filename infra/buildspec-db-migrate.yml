@@ -13,4 +13,5 @@ phases:
     commands:
       - cd packages/db
       - npx prisma migrate deploy --schema=prisma/schema.prisma
-         - node prisma/seed.js
+      - node prisma/seed.js
+
