@@ -3,16 +3,13 @@ version: 0.2
 phases:
   install:
     commands:
-      # Activar Corepack (gestor de Yarn moderno incluido en Node)
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
-      # Instalar dependencias respetando el lockfile de Yarn Berry
       - yarn install --immutable
   pre_build:
     commands:
-      # Recuperar cadena de conexión de Secrets Manager
       - export DATABASE_URL=$(aws secretsmanager get-secret-value --secret-id core/dev/DATABASE_URL --query SecretString --output text)
   build:
     commands:
-      # Ejecutar migraciones Prisma desde el workspace de db
-      - yarn workspace @sevens/db prisma migrate deploy --schema=packages/db/schema.prisma
+      - cd packages/db
+      - npx prisma migrate deploy --schema=./schema.prisma
