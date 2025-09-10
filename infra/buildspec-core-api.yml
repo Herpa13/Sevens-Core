@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - corepack enable
+      - corepack prepare yarn@4.9.4 --activate
+      - yarn install --immutable
+  build:
+    commands:
+      - cd packages/core-gateway
+      # Compilar NestJS a dist/
+      - yarn build
+      # Empaquetar en ZIP para Lambda
+      - zip -r ../../core-gateway.zip dist node_modules package.json
+artifacts:
+  files:
+    - core-gateway.zip
