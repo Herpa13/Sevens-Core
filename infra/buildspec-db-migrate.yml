@@ -12,4 +12,4 @@ phases:
   build:
     commands:
       - cd packages/db
-      - npx prisma migrate deploy --schema=./schema.prisma
+      - npx prisma migrate deploy --schema=prisma/schema.prisma
