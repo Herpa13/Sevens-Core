@@ -1,0 +1,12 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm install -g yarn
+      - yarn install --frozen-lockfile
+  pre_build:
+    commands:
+      - export DATABASE_URL=$(aws secretsmanager get-secret-value --secret-id core/dev/DATABASE_URL --query SecretString --output text)
+  build:
+    commands:
+      - npx prisma migrate deploy --schema=packages/db/schema.prisma
