@@ -5,12 +5,18 @@ phases:
     commands:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
+      # Forzamos node_modules clásico para Lambda
       - yarn config set nodeLinker node-modules
-      - yarn workspaces focus @sevens/core-gateway --all --production
+      # Enfocamos dependencias de core-gateway (prod + dev para build)
+      - yarn workspaces focus @sevens/core-gateway --all
+      # Instalamos typescript si no está en devDependencies
+      - yarn add -D typescript
   build:
     commands:
       - cd apps/core-gateway
+      # Compilar a dist/
       - yarn build
+      # Empaquetar dist + node_modules + package.json
       - zip -r ../../core-gateway.zip dist node_modules package.json
 artifacts:
   files:
