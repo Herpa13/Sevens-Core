@@ -3,15 +3,16 @@ version: 0.2
 phases:
   install:
     commands:
-      # Forzamos Yarn Classic
-      - npm install -g yarn
-      # Instalamos dependencias desde la raíz del monorepo
-      - yarn --cwd $CODEBUILD_SRC_DIR install
+      # Activar Corepack (gestor de Yarn moderno incluido en Node)
+      - corepack enable
+      - corepack prepare yarn@4.9.4 --activate
+      # Instalar dependencias respetando el lockfile de Yarn Berry
+      - yarn install --immutable
   pre_build:
     commands:
-      # Obtenemos la conexión a RDS desde Secrets Manager
+      # Recuperar cadena de conexión de Secrets Manager
       - export DATABASE_URL=$(aws secretsmanager get-secret-value --secret-id core/dev/DATABASE_URL --query SecretString --output text)
   build:
     commands:
-      # Ejecutamos migraciones Prisma contra RDS Proxy
-      - npx prisma migrate deploy --schema=packages/db/schema.prisma
+      # Ejecutar migraciones Prisma desde el workspace de db
+      - yarn workspace @sevens/db prisma migrate deploy --schema=packages/db/schema.prisma
