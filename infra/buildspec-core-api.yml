@@ -9,7 +9,7 @@ phases:
       - yarn workspaces focus @sevens/core-gateway --production
   pre_build:
     commands:
-      - echo "Pre-build phase (opcional: tests, lint, etc)"
+      - echo "Pre-build phase"
   build:
     commands:
       - cd apps/core-gateway
@@ -19,5 +19,3 @@ phases:
 artifacts:
   files:
     - core-gateway.zip
-
-
