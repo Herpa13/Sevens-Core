@@ -6,7 +6,6 @@ phases:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      # instalamos dependencias en modo producción para core-gateway
       - yarn workspaces focus @sevens/core-gateway --production
   pre_build:
     commands:
@@ -16,9 +15,9 @@ phases:
       - cd apps/core-gateway
       - yarn build
       - cd ../..
-      # empaquetamos dist, node_modules reducido y package.json
       - zip -r core-gateway.zip apps/core-gateway/dist node_modules apps/core-gateway/package.json
 artifacts:
   files:
     - core-gateway.zip
+
 
