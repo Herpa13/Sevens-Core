@@ -3,15 +3,13 @@ version: 0.2
 phases:
   install:
     commands:
-      # Instalamos Yarn Classic (1.x)
+      # Forzamos Yarn Classic
       - npm install -g yarn
-      # Nos aseguramos de estar en la raíz del monorepo
-      - cd $CODEBUILD_SRC_DIR
-      # Instalamos dependencias con workspaces (sin frozen-lockfile, porque rompe con workspace:*)
-      - yarn install
+      # Instalamos dependencias desde la raíz del monorepo
+      - yarn --cwd $CODEBUILD_SRC_DIR install
   pre_build:
     commands:
-      # Recuperamos la conexión desde Secrets Manager
+      # Obtenemos la conexión a RDS desde Secrets Manager
       - export DATABASE_URL=$(aws secretsmanager get-secret-value --secret-id core/dev/DATABASE_URL --query SecretString --output text)
   build:
     commands:
