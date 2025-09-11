@@ -1,39 +1,36 @@
-# --------------------------
-# Etapa de compilación (builder)
-# --------------------------
-FROM node:18 AS builder
+version: 0.2
 
-WORKDIR /Sevens-Core
+env:
+  variables:
+    IMAGE_NAME: core-gateway
+    IMAGE_TAG: latest
 
-COPY . .
-RUN corepack enable && corepack prepare yarn@4.9.4 --activate
-RUN yarn install
+phases:
+  install:
+    commands:
+      - echo Checking AWS CLI and Docker
+      - aws --version
+      - docker --version
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REGION=$AWS_DEFAULT_REGION
+      - REPO_URI=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}
+      - echo ACCOUNT_ID=$ACCOUNT_ID REGION=$REGION REPO_URI=$REPO_URI
+      - aws ecr get-login-password --region ${REGION} > /tmp/ecrpass.txt
+      - docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com < /tmp/ecrpass.txt
 
-# Compilar TODOS los paquetes necesarios en orden.
-RUN yarn workspace @sevens/shared build
-RUN yarn workspace @sevens/db build
-RUN yarn workspace @sevens/core-gateway build
+  build:
+    commands:
+      - echo Docker build
+      - docker build -f Dockerfile.core-gateway -t ${IMAGE_NAME}:${IMAGE_TAG} .
+      - docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${REPO_URI}:${IMAGE_TAG}
 
+  post_build:
+    commands:
+      - echo Docker push
+      - docker push ${REPO_URI}:${IMAGE_TAG}
+      - printf "IMAGE_URI=%s\n" "${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
+      - echo Done
 
-# --------------------------
-# Etapa final Lambda
-# --------------------------
-FROM public.ecr.aws/lambda/nodejs:18
-
-WORKDIR /var/task
-
-# 1. Copiar los artefactos de compilación
-COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
-COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
-
-# 2. Copiar las dependencias externas
-COPY --from=builder /Sevens-Core/node_modules ./node_modules
-
-# 3. Copiar el contenido REAL de los workspaces internos
-COPY --from=builder /Sevens-Core/packages/db/dist ./node_modules/@sevens/db/dist
-COPY --from=builder /Sevens-Core/packages/db/package.json ./node_modules/@sevens/db/
-COPY --from=builder /Sevens-Core/packages/shared/dist ./node_modules/@sevens/shared/dist
-COPY --from=builder /Sevens-Core/packages/shared/package.json ./node_modules/@sevens/shared/
-
-# Definir el handler de Lambda
-CMD ["dist/main.handler"]
+artifacts:
+  files:
+    - image-uri.txt
