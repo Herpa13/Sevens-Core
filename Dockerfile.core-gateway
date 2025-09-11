@@ -8,9 +8,10 @@ WORKDIR /Sevens-Core
 # Copiar los manifiestos principales para aprovechar la caché
 COPY package.json yarn.lock ./
 
-# Copiar los manifiestos de workspaces necesarios
+# Copiar los manifiestos de workspaces que necesita core-gateway
 COPY apps/core-gateway/package.json apps/core-gateway/
 COPY packages/shared/package.json packages/shared/
+COPY packages/db/package.json packages/db/
 
 # Activar corepack con yarn v4
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
@@ -40,8 +41,9 @@ COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 # Copiar dependencias (node_modules del monorepo completo)
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# Copiar el paquete compartido (workspace)
+# Copiar workspaces internos requeridos
 COPY --from=builder /Sevens-Core/packages/shared ./node_modules/@sevens/shared
+COPY --from=builder /Sevens-Core/packages/db ./node_modules/@sevens/db
 
 # Definir el handler para Lambda
 CMD ["dist/main.handler"]
