@@ -6,9 +6,12 @@ phases:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      - yarn workspaces focus @sevens/core-gateway --production
-      # Instalar TS para el build
+      # Focalizamos en el workspace de core-gateway con todas las dependencias
+      - yarn workspaces focus @sevens/core-gateway --all
+      # Instalar TS para compilar
       - yarn add -D typescript ts-node
+      # Asegurar que Lambda tiene serverless-http disponible
+      - yarn add serverless-http
   pre_build:
     commands:
       - echo "Pre-build phase"
@@ -18,13 +21,15 @@ phases:
       - yarn build
       - cd ../..
       # Empaquetamos solo lo necesario para Lambda
-      - zip -r core-gateway.zip apps/core-gateway/dist \
+      - zip -r core-gateway.zip \
+          apps/core-gateway/dist \
           apps/core-gateway/package.json \
           node_modules/@nestjs \
           node_modules/@prisma \
           node_modules/.prisma \
           node_modules/rxjs \
-          node_modules/reflect-metadata
+          node_modules/reflect-metadata \
+          node_modules/serverless-http
   post_build:
     commands:
       - echo "Build finished, checking package size..."
