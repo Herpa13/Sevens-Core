@@ -7,11 +7,8 @@ phases:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      # Instala solo deps de producción del workspace
       - yarn workspaces focus @sevens/core-gateway --production
-      # Herramientas de build en CI (si tu script build usa tsc/ts-node)
       - yarn add -D typescript ts-node
-      # Adaptador Lambda + Fastify v4
       - yarn add @fastify/aws-lambda fastify@^4
 
   pre_build:
@@ -23,23 +20,11 @@ phases:
       - cd apps/core-gateway
       - echo "Building core-gateway in $(pwd)"
       - yarn build
-      # Verificar que exista la salida
       - test -d dist || (echo "ERROR: no existe ./dist tras el build" && exit 1)
       - ls -la dist || true
-
-      # Empaquetar DESDE el workspace; escribimos el zip en la raíz del repo
-      - |
-        zip -r ../../core-gateway.zip \
-          dist \
-          package.json \
-          node_modules/@nestjs \
-          node_modules/@prisma \
-          node_modules/.prisma \
-          node_modules/rxjs \
-          node_modules/reflect-metadata \
-          node_modules/@fastify \
-          node_modules/fastify
-
+      # Si usas Prisma en runtime, descomenta la siguiente línea:
+      # - yarn prisma generate
+      - zip -r ../../core-gateway.zip dist package.json node_modules/@nestjs node_modules/@prisma node_modules/.prisma node_modules/rxjs node_modules/reflect-metadata node_modules/@fastify node_modules/fastify
       - cd ../..
       - du -sh core-gateway.zip || true
       - unzip -l core-gateway.zip | head -50 || true
