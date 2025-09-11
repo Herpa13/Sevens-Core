@@ -6,12 +6,12 @@ phases:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      # Instalar solo lo necesario del workspace (prod)
+      # Solo producción del workspace para aligerar node_modules
       - yarn workspaces focus @sevens/core-gateway --production
-      # Añadimos herramientas de build si hace falta
+      # Herramientas de build en el entorno CI
       - yarn add -D typescript ts-node
-      # Añadimos el runtime adapter para Lambda+Fastify
-      - yarn add @fastify/aws-lambda
+      # Adaptador Lambda + Fastify v4 para evitar mismatches
+      - yarn add @fastify/aws-lambda fastify@^4
   pre_build:
     commands:
       - echo "Pre-build phase"
@@ -29,7 +29,8 @@ phases:
           node_modules/.prisma \
           node_modules/rxjs \
           node_modules/reflect-metadata \
-          node_modules/@fastify
+          node_modules/@fastify \
+          node_modules/fastify
   post_build:
     commands:
       - echo "Build finished, checking package size..."
