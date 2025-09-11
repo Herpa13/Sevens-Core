@@ -2,14 +2,14 @@
   "name": "@sevens/db",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.js",   // <-- CAMBIO: Apunta a la salida compilada
-  "types": "dist/index.d.ts", // <-- BUENA PRÁCTICA: Para el autocompletado
+  "main": "dist/index.js",   
+  "types": "dist/index.d.ts", 
   "type": "commonjs",
   "dependencies": {
     "@sevens/shared": "workspace:*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json", // <-- CAMBIO: Comando de build real
+    "build": "tsc -p tsconfig.build.json", 
     "lint": "echo lint db",
     "typecheck": "echo typecheck db",
     "test": "echo test db",
