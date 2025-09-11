@@ -3,37 +3,37 @@ version: 0.2
 phases:
   install:
     commands:
-      - set -euo pipefail
-      - corepack enable
-      - corepack prepare yarn@4.9.4 --activate
-      - yarn config set nodeLinker node-modules
-      - yarn workspaces focus @sevens/core-gateway --production
-      - yarn add -D typescript ts-node
-      - yarn add @fastify/aws-lambda fastify@^4
+      - "set -euo pipefail"
+      - "corepack enable"
+      - "corepack prepare yarn@4.9.4 --activate"
+      - "yarn config set nodeLinker node-modules"
+      - "yarn workspaces focus @sevens/core-gateway --production"
+      - "yarn add -D typescript ts-node"
+      - "yarn add @fastify/aws-lambda fastify@^4"
 
   pre_build:
     commands:
-      - echo "Pre-build phase"
+      - "echo Pre-build phase"
 
   build:
     commands:
-      - cd apps/core-gateway
-      - echo "Building core-gateway in $(pwd)"
-      - yarn build
-      - test -d dist || (echo "ERROR: no existe ./dist tras el build" && exit 1)
-      - ls -la dist || true
-      # Si usas Prisma en runtime, descomenta la siguiente línea:
-      # - yarn prisma generate
-      - zip -r ../../core-gateway.zip dist package.json node_modules/@nestjs node_modules/@prisma node_modules/.prisma node_modules/rxjs node_modules/reflect-metadata node_modules/@fastify node_modules/fastify
-      - cd ../..
-      - du -sh core-gateway.zip || true
-      - unzip -l core-gateway.zip | head -50 || true
+      - "cd apps/core-gateway"
+      - "echo Building core-gateway in $(pwd)"
+      - "yarn build"
+      - "test -d dist || (echo 'ERROR: no existe ./dist tras el build' && exit 1)"
+      - "ls -la dist || true"
+      # Si usas Prisma, descomenta:
+      # - "yarn prisma generate"
+      - "zip -r ../../core-gateway.zip dist package.json node_modules/@nestjs node_modules/@prisma node_modules/.prisma node_modules/rxjs node_modules/reflect-metadata node_modules/@fastify node_modules/fastify"
+      - "cd ../.."
+      - "du -sh core-gateway.zip || true"
+      - "unzip -l core-gateway.zip | head -50 || true"
 
   post_build:
     commands:
-      - echo "Build finished, checking package size..."
-      - du -sh core-gateway.zip || true
-      - unzip -l core-gateway.zip | head -20 || true
+      - "echo Build finished, checking package size..."
+      - "du -sh core-gateway.zip || true"
+      - "unzip -l core-gateway.zip | head -20 || true"
 
 artifacts:
   files:
