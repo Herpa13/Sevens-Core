@@ -8,6 +8,7 @@ phases:
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
       - yarn workspaces focus @sevens/core-gateway --all --production false
+      - yarn add -D @types/node
   pre_build:
     commands:
       - echo "Pre-build phase"
@@ -20,3 +21,4 @@ phases:
 artifacts:
   files:
     - core-gateway.zip
+
