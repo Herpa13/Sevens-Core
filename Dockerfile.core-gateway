@@ -8,20 +8,29 @@ RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
 WORKDIR /Sevens-Core
 
-# 1. Copiar solo los manifiestos de dependencias de TODOS los workspaces.
-# Esta es la sección corregida para que coincida con tu estructura.
+# 1. Copiar SOLO los manifiestos de dependencias.
+# Usamos una sola capa de COPY para toda la estructura de workspaces.
+# Esto es más robusto.
 COPY package.json yarn.lock ./
-COPY apps/*/package.json ./apps/*/
-COPY packages/*/package.json ./packages/*/
-COPY infra/*/package.json ./infra/*/
+COPY apps/ ./apps/
+COPY packages/ ./packages/
+COPY infra/ ./infra/
+
+
+# ======================= PASO DE DEPURACIÓN =======================
+# Este comando nos mostrará en el log de CodeBuild exactamente qué
+# archivos package.json están presentes antes de la instalación.
+RUN echo "--- Verificando la estructura de archivos ANTES de yarn install ---" && \
+    find . -name "package.json" && \
+    echo "------------------------------------------------------------"
+# =================================================================
 
 
 # 2. Instalar todas las dependencias.
-# Ahora Yarn encontrará todos los workspaces y resolverá las dependencias correctamente.
 RUN yarn install --immutable
 
 
-# 3. Copiar todo el código fuente del monorepo.
+# 3. Copiar el resto del código (sobrescribirá los package.json pero no importa)
 COPY . .
 
 
