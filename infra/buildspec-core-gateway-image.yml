@@ -35,9 +35,4 @@ phases:
     commands:
       - echo "📤 Subiendo imagen a ECR..."
       - docker push ${REPO_URI}:${IMAGE_TAG}
-      - echo "IMAGE_URI=${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
       - echo "✅ Imagen subida: ${REPO_URI}:${IMAGE_TAG}"
-
-artifacts:
-  files:
-    - image-uri.txt
