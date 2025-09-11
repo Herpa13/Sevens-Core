@@ -22,17 +22,8 @@ phases:
       - "yarn build"
       - "test -d dist || (echo 'ERROR: no existe ./dist tras el build' && exit 1)"
       - "ls -la dist || true"
-      # Empaquetamos salida + dependencias críticas del workspace
-      - "zip -r ../../core-gateway.zip \
-          dist \
-          package.json \
-          node_modules/@nestjs \
-          node_modules/@prisma \
-          node_modules/.prisma \
-          node_modules/rxjs \
-          node_modules/reflect-metadata \
-          node_modules/@fastify \
-          node_modules/fastify"
+      # Empaquetamos dist + package.json del workspace + node_modules raíz
+      - "zip -r ../../core-gateway.zip dist package.json ../../node_modules"
       - "cd ../.."
       - "du -sh core-gateway.zip || true"
       - "unzip -l core-gateway.zip | head -50 || true"
