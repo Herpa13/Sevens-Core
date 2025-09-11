@@ -1,6 +1,5 @@
 # --------------------------
 # Etapa de compilación (builder)
-# ... (la etapa de builder que ya funciona se queda exactamente igual) ...
 # --------------------------
 FROM node:18 AS builder
 
@@ -9,12 +8,18 @@ WORKDIR /Sevens-Core
 COPY . .
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 RUN yarn install
+
+# ======================= CORRECCIÓN AQUÍ =======================
+# Compilar TODOS los paquetes necesarios, en orden de dependencia si es necesario.
+# (Normalmente, los paquetes 'shared' y 'db' se compilan primero).
+RUN yarn workspace @sevens/shared build
+RUN yarn workspace @sevens/db build
 RUN yarn workspace @sevens/core-gateway build
 
 
-# -----------------------------------------------------------
-# Etapa final Lambda (AQUÍ ESTÁ LA CORRECCIÓN)
-# -----------------------------------------------------------
+# --------------------------
+# Etapa final Lambda
+# --------------------------
 FROM public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /var/task
@@ -26,8 +31,7 @@ COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 # 2. Copiar las dependencias externas desde node_modules
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# 3. Copiar el contenido REAL de los workspaces internos.
-#    Esto reemplaza los enlaces simbólicos rotos con los archivos compilados.
+# 3. Copiar el contenido REAL de los workspaces internos (ahora sí existirán)
 COPY --from=builder /Sevens-Core/packages/db/dist ./node_modules/@sevens/db/dist
 COPY --from=builder /Sevens-Core/packages/db/package.json ./node_modules/@sevens/db/
 COPY --from=builder /Sevens-Core/packages/shared/dist ./node_modules/@sevens/shared/dist
