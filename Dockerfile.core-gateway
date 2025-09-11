@@ -9,9 +9,7 @@ COPY . .
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 RUN yarn install
 
-# ======================= CORRECCIÓN AQUÍ =======================
-# Compilar TODOS los paquetes necesarios, en orden de dependencia si es necesario.
-# (Normalmente, los paquetes 'shared' y 'db' se compilan primero).
+# Compilar TODOS los paquetes necesarios en orden.
 RUN yarn workspace @sevens/shared build
 RUN yarn workspace @sevens/db build
 RUN yarn workspace @sevens/core-gateway build
@@ -28,10 +26,10 @@ WORKDIR /var/task
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 
-# 2. Copiar las dependencias externas desde node_modules
+# 2. Copiar las dependencias externas
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# 3. Copiar el contenido REAL de los workspaces internos (ahora sí existirán)
+# 3. Copiar el contenido REAL de los workspaces internos
 COPY --from=builder /Sevens-Core/packages/db/dist ./node_modules/@sevens/db/dist
 COPY --from=builder /Sevens-Core/packages/db/package.json ./node_modules/@sevens/db/
 COPY --from=builder /Sevens-Core/packages/shared/dist ./node_modules/@sevens/shared/dist
