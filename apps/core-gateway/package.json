@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "echo lint core-gateway",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "jest",
