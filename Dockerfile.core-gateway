@@ -1,0 +1,46 @@
+# --------------------------
+# Etapa 1: Build (compilación con TypeScript + Prisma)
+# --------------------------
+FROM node:18 AS builder
+
+WORKDIR /Sevens-Core
+
+# Copiar lo mínimo primero para cachear dependencias
+COPY package.json yarn.lock ./
+COPY apps/core-gateway/package.json apps/core-gateway/
+
+# Activar Yarn 4
+RUN corepack enable && corepack prepare yarn@4.9.4 --activate
+
+# Instalar TODAS las dependencias (incluye devDependencies para compilar y Prisma CLI)
+RUN yarn install --frozen-lockfile
+
+# Copiar el resto del monorepo
+COPY . .
+
+# Generar Prisma Client (usa el schema de tu core-gateway, ajusta la ruta si está en otra carpeta)
+WORKDIR /Sevens-Core/apps/core-gateway
+RUN npx prisma generate
+
+# Compilar el proyecto (NestJS build → genera dist/)
+RUN yarn build
+
+
+# --------------------------
+# Etapa 2: Runtime (imagen final para Lambda)
+# --------------------------
+FROM public.ecr.aws/lambda/nodejs:18
+
+WORKDIR /var/task
+
+# Copiar solo lo necesario desde la etapa build
+COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
+COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
+COPY --from=builder /Sevens-Core/node_modules ./node_modules
+
+# Incluimos el Prisma Client generado y los engines
+COPY --from=builder /Sevens-Core/apps/core-gateway/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /Sevens-Core/apps/core-gateway/node_modules/@prisma ./node_modules/@prisma
+
+# Configurar el handler de Lambda
+CMD [ "dist/main.handler" ]
