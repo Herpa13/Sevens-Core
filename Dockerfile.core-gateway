@@ -8,28 +8,16 @@ RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
 WORKDIR /Sevens-Core
 
-# 1. Copiar solo los manifiestos de dependencias.
-COPY package.json yarn.lock ./
-COPY apps/ ./apps/
-COPY packages/ ./packages/
-COPY infra/ ./infra/
-
-# ======================= PASO DE DEPURACIÓN (Opcional, se puede quitar) =======================
-RUN echo "--- Verificando la estructura de archivos ANTES de yarn install ---" && \
-    find . -name "package.json" && \
-    echo "------------------------------------------------------------"
-# =========================================================================================
-
-# 2. Instalar todas las dependencias.
-#    ELIMINAMOS --immutable para permitir que Yarn actualice el lockfile si es necesario.
-RUN yarn install
-
-
-# 3. Copiar todo el código fuente del monorepo.
+# 1. Copiar TODO el código fuente del monorepo primero.
+#    Esto asegura que todo el contexto esté disponible para la instalación.
 COPY . .
 
+# 2. Instalar todas las dependencias.
+#    Esto creará node_modules y .yarn, que persistirán para los siguientes pasos.
+RUN yarn install
 
-# 4. Compilar la aplicación específica.
+# 3. Compilar la aplicación específica.
+#    Ahora este comando encontrará los node_modules y funcionará.
 RUN yarn workspace @sevens/core-gateway build
 
 
