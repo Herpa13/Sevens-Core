@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "module": "CommonJS",
     "declaration": false,
     "removeComments": true,
@@ -13,5 +14,6 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "exclude": ["test", "**/*.spec.ts"]
+  "exclude": ["test", "**/*.spec.ts", "**/*.test.ts"]
 }
+
