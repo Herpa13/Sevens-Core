@@ -6,12 +6,12 @@ phases:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      # Focalizamos en el workspace de core-gateway con todas las dependencias
-      - yarn workspaces focus @sevens/core-gateway --all
-      # Instalar TS para compilar
+      # Instalar solo lo necesario del workspace (prod)
+      - yarn workspaces focus @sevens/core-gateway --production
+      # Añadimos herramientas de build si hace falta
       - yarn add -D typescript ts-node
-      # Asegurar que Lambda tiene serverless-http disponible
-      - yarn add serverless-http
+      # Añadimos el runtime adapter para Lambda+Fastify
+      - yarn add @fastify/aws-lambda
   pre_build:
     commands:
       - echo "Pre-build phase"
@@ -29,7 +29,7 @@ phases:
           node_modules/.prisma \
           node_modules/rxjs \
           node_modules/reflect-metadata \
-          node_modules/serverless-http
+          node_modules/@fastify
   post_build:
     commands:
       - echo "Build finished, checking package size..."
