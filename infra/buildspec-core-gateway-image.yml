@@ -8,10 +8,7 @@ env:
 phases:
   install:
     commands:
-      - "echo '🔧 Instalando AWS CLI v2 (por si no viene en la imagen)...'"
-      - "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip"
-      - "unzip -q awscliv2.zip"
-      - "./aws/install"
+      - "echo '🔧 Verificando AWS CLI existente...'"
       - "aws --version"
       - "echo 'Inicializando variables y login en ECR...'"
       - "export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)"
