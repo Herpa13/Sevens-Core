@@ -13,6 +13,10 @@ phases:
       - echo "🔧 Verificando AWS CLI existente..."
       - aws --version
       - docker --version
+      - echo "📦 Instalando dependencias con Yarn..."
+      - corepack enable
+      - corepack prepare yarn@4.9.4 --activate
+      - yarn install
       - echo "Inicializando variables y login en ECR..."
       - export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - export REGION=$AWS_DEFAULT_REGION
