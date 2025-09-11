@@ -9,10 +9,9 @@
     "@sevens/shared": "workspace:*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "lint": "echo lint db",
-    "typecheck": "echo typecheck db",
-    "test": "echo test db",
-    "dev": "echo dev db"
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.2"
   }
 }
