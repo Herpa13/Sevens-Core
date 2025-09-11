@@ -8,6 +8,11 @@ env:
 phases:
   install:
     commands:
+      - echo "🔧 Instalando AWS CLI v2 (por si no viene en la imagen)..."
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - unzip -q awscliv2.zip
+      - ./aws/install
+      - aws --version
       - echo "Inicializando variables y login en ECR..."
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - REGION=$AWS_DEFAULT_REGION
@@ -26,5 +31,10 @@ phases:
   post_build:
     commands:
       - echo "Subiendo imagen a ECR..."
-      - docke
+      - docker push "${REPO_URI}:${IMAGE_TAG}"
+      - echo "IMAGE_URI=${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
+      - echo "✅ Imagen subida: ${REPO_URI}:${IMAGE_TAG}"
 
+artifacts:
+  files:
+    - image-uri.txt
