@@ -5,9 +5,10 @@ phases:
     commands:
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
-      # Instalamos solo dependencias de producción
       - yarn config set nodeLinker node-modules
       - yarn workspaces focus @sevens/core-gateway --production
+      # Instalar TS para el build
+      - yarn add -D typescript ts-node
   pre_build:
     commands:
       - echo "Pre-build phase"
@@ -16,17 +17,19 @@ phases:
       - cd apps/core-gateway
       - yarn build
       - cd ../..
-      # Empaquetamos solo dist + package.json + dependencias necesarias
+      # Empaquetamos solo lo necesario para Lambda
       - zip -r core-gateway.zip apps/core-gateway/dist \
           apps/core-gateway/package.json \
           node_modules/@nestjs \
           node_modules/@prisma \
-          node_modules/.prisma
+          node_modules/.prisma \
+          node_modules/rxjs \
+          node_modules/reflect-metadata
   post_build:
     commands:
       - echo "Build finished, checking package size..."
-      - du -sh core-gateway.zip
-      - unzip -l core-gateway.zip | head -20
+      - du -sh core-gateway.zip || true
+      - unzip -l core-gateway.zip | head -20 || true
 
 artifacts:
   files:
