@@ -8,28 +8,28 @@ env:
 phases:
   install:
     commands:
-      - echo "🔧 Checking AWS CLI and Docker"
+      - echo Checking AWS CLI and Docker
       - aws --version
       - docker --version
-      - echo "🔧 Setting ECR variables"
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - REGION=$AWS_DEFAULT_REGION
       - REPO_URI=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}
-      - echo "ACCOUNT_ID=$ACCOUNT_ID REGION=$REGION REPO_URI=$REPO_URI"
-      - aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+      - echo ACCOUNT_ID=$ACCOUNT_ID REGION=$REGION REPO_URI=$REPO_URI
+      - aws ecr get-login-password --region ${REGION} > /tmp/ecrpass.txt
+      - docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com < /tmp/ecrpass.txt
 
   build:
     commands:
-      - echo "🐳 Docker build"
+      - echo Docker build
       - docker build -f Dockerfile.core-gateway -t ${IMAGE_NAME}:${IMAGE_TAG} .
       - docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${REPO_URI}:${IMAGE_TAG}
 
   post_build:
     commands:
-      - echo "🚀 Docker push"
+      - echo Docker push
       - docker push ${REPO_URI}:${IMAGE_TAG}
-      - echo "IMAGE_URI=${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
-      - echo "✅ Image uploaded: ${REPO_URI}:${IMAGE_TAG}"
+      - printf "IMAGE_URI=%s\n" "${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
+      - echo Done
 
 artifacts:
   files:
