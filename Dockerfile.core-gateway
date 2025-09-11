@@ -5,45 +5,43 @@ FROM node:18 AS builder
 
 WORKDIR /Sevens-Core
 
-# Copiar los manifiestos principales para aprovechar la caché
+# Copiar package.json y yarn.lock del monorepo
 COPY package.json yarn.lock ./
 
-# Copiar los manifiestos de workspaces que necesita core-gateway
+# Copiar TODOS los manifiestos de los workspaces
 COPY apps/core-gateway/package.json apps/core-gateway/
-COPY packages/shared/package.json packages/shared/
-COPY packages/db/package.json packages/db/
+COPY packages/*/package.json packages/*/
 
-# Activar corepack con yarn v4
+# Activar Yarn
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
-# Instalar TODAS las dependencias (incluyendo workspaces)
-RUN yarn install --immutable
-
-# Copiar todo el código fuente del monorepo
+# Copiar TODO el monorepo (fuentes + packages)
 COPY . .
 
-# Compilar la app core-gateway
+# Instalar dependencias (monorepo completo)
+RUN yarn install --immutable
+
+# Compilar core-gateway
 WORKDIR /Sevens-Core/apps/core-gateway
 RUN yarn build
 
 
 # --------------------------
-# Etapa final para Lambda
+# Etapa final Lambda
 # --------------------------
 FROM public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /var/task
 
-# Copiar los artefactos de build
+# Copiar dist de core-gateway
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 
-# Copiar dependencias (node_modules del monorepo completo)
+# Copiar node_modules de todo el monorepo
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# Copiar workspaces internos requeridos
-COPY --from=builder /Sevens-Core/packages/shared ./node_modules/@sevens/shared
-COPY --from=builder /Sevens-Core/packages/db ./node_modules/@sevens/db
+# Copiar workspaces internos (todos los que haya en packages/*)
+COPY --from=builder /Sevens-Core/packages ./node_modules/@sevens
 
-# Definir el handler para Lambda
+# Definir handler de Lambda
 CMD ["dist/main.handler"]
