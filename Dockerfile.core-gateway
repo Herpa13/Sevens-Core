@@ -8,28 +8,24 @@ RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
 WORKDIR /Sevens-Core
 
-# --- CORRECCIÓN Y OPTIMIZACIÓN ---
-# 1. Copiar solo los manifiestos de dependencias.
-# Esto crea una capa que solo se invalida si los package.json o yarn.lock cambian.
+# 1. Copiar solo los manifiestos de dependencias de TODOS los workspaces.
+# Esta es la sección corregida para que coincida con tu estructura.
 COPY package.json yarn.lock ./
 COPY apps/*/package.json ./apps/*/
 COPY packages/*/package.json ./packages/*/
-# Si tienes más carpetas con workspaces, añádelas aquí. Por ejemplo:
-# COPY infra/*/package.json ./infra/*/
+COPY infra/*/package.json ./infra/*/
 
 
-# 2. Instalar dependencias ANTES de copiar el resto del código fuente.
-# Esto asegura que los node_modules se guarden en una capa cacheads.
+# 2. Instalar todas las dependencias.
+# Ahora Yarn encontrará todos los workspaces y resolverá las dependencias correctamente.
 RUN yarn install --immutable
 
 
-# 3. Ahora, copiar todo el código fuente.
-# Si solo cambias el código, Docker reutilizará la capa de 'yarn install' de arriba.
+# 3. Copiar todo el código fuente del monorepo.
 COPY . .
 
 
 # 4. Compilar la aplicación específica.
-# No es necesario cambiar de directorio, puedes ejecutarlo desde la raíz.
 RUN yarn workspace @sevens/core-gateway build
 
 
@@ -44,14 +40,8 @@ WORKDIR /var/task
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 
-# Copiar SOLO las dependencias de producción.
-# Esto crea una imagen final mucho más pequeña y segura.
+# Copiar las dependencias de producción de todo el monorepo
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# NOTA: La siguiente línea es probablemente innecesaria y podría causar problemas.
-# La copia de node_modules de arriba ya debería incluir los workspaces
-# correctamente enlazados por Yarn. Te recomiendo eliminarla.
-# COPY --from=builder /Sevens-Core/packages ./node_modules/@sevens
-
-# Definir handler de Lambda
+# Definir el handler de Lambda
 CMD ["dist/main.handler"]
