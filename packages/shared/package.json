@@ -9,10 +9,9 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "lint": "echo lint shared",
-    "typecheck": "echo typecheck shared",
-    "test": "echo test shared",
-    "dev": "echo dev shared"
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.2"
   }
 }
