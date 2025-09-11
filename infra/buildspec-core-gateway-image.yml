@@ -7,32 +7,29 @@ env:
 
 phases:
   install:
-    runtime-versions:
-      docker: 20
     commands:
-      - echo "🔧 Verificando AWS CLI existente..."
+      - echo "Checking AWS CLI and Docker"
       - aws --version
       - docker --version
-      - echo "📦 Instalando dependencias con Yarn..."
+      - echo "Installing Yarn deps"
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn install
-      - echo "Inicializando variables y login en ECR..."
-      - export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - export REGION=$AWS_DEFAULT_REGION
-      - export REPO_URI=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}
+      - echo "Setting ECR variables"
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REGION=$AWS_DEFAULT_REGION
+      - REPO_URI=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}
       - echo "ACCOUNT_ID=$ACCOUNT_ID REGION=$REGION REPO_URI=$REPO_URI"
-      - aws ecr describe-repositories --repository-names ${IMAGE_NAME} --region $REGION || true
-      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+      - aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
 
   build:
     commands:
-      - echo "🏗️ Construyendo imagen Docker desde Dockerfile.core-gateway..."
+      - echo "Docker build"
       - docker build -f Dockerfile.core-gateway -t ${IMAGE_NAME}:${IMAGE_TAG} .
       - docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${REPO_URI}:${IMAGE_TAG}
 
   post_build:
     commands:
-      - echo "📤 Subiendo imagen a ECR..."
+      - echo "Docker push"
       - docker push ${REPO_URI}:${IMAGE_TAG}
-      - echo "✅ Imagen subida: ${REPO_URI}:${IMAGE_TAG}"
+      - echo "Done"
