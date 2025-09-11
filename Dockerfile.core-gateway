@@ -1,39 +1,37 @@
 # --------------------------
 # Etapa de compilación (builder)
+# ... (la etapa de builder que ya funciona se queda exactamente igual) ...
 # --------------------------
 FROM node:18 AS builder
 
-# Activar Yarn primero
-RUN corepack enable && corepack prepare yarn@4.9.4 --activate
-
 WORKDIR /Sevens-Core
 
-# 1. Copiar TODO el código fuente del monorepo primero.
-#    Esto asegura que todo el contexto esté disponible para la instalación.
 COPY . .
-
-# 2. Instalar todas las dependencias.
-#    Esto creará node_modules y .yarn, que persistirán para los siguientes pasos.
+RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 RUN yarn install
-
-# 3. Compilar la aplicación específica.
-#    Ahora este comando encontrará los node_modules y funcionará.
 RUN yarn workspace @sevens/core-gateway build
 
 
-# --------------------------
-# Etapa final Lambda
-# --------------------------
+# -----------------------------------------------------------
+# Etapa final Lambda (AQUÍ ESTÁ LA CORRECCIÓN)
+# -----------------------------------------------------------
 FROM public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /var/task
 
-# Copiar los artefactos de compilación desde la etapa 'builder'
+# 1. Copiar los artefactos de compilación
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 
-# Copiar las dependencias de producción de todo el monorepo
+# 2. Copiar las dependencias externas desde node_modules
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
+
+# 3. Copiar el contenido REAL de los workspaces internos.
+#    Esto reemplaza los enlaces simbólicos rotos con los archivos compilados.
+COPY --from=builder /Sevens-Core/packages/db/dist ./node_modules/@sevens/db/dist
+COPY --from=builder /Sevens-Core/packages/db/package.json ./node_modules/@sevens/db/
+COPY --from=builder /Sevens-Core/packages/shared/dist ./node_modules/@sevens/shared/dist
+COPY --from=builder /Sevens-Core/packages/shared/package.json ./node_modules/@sevens/shared/
 
 # Definir el handler de Lambda
 CMD ["dist/main.handler"]
