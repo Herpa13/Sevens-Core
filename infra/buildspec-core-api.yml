@@ -3,11 +3,10 @@ version: 0.2
 phases:
   install:
     commands:
+      - npm install -g typescript
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
       - yarn config set nodeLinker node-modules
-      # Instalamos también typescript y nest-cli aunque sean devDependencies
-      - yarn add -D typescript @nestjs/cli
       - yarn workspaces focus @sevens/core-gateway --all --production false
   pre_build:
     commands:
