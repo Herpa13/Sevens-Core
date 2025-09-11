@@ -1,29 +1,36 @@
 # --------------------------
-# Etapa de compilación
+# Etapa de compilación (builder)
 # --------------------------
 FROM node:18 AS builder
 
-WORKDIR /Sevens-Core
-
-# Copiar package.json y yarn.lock del monorepo
-COPY package.json yarn.lock ./
-
-# Copiar TODOS los manifiestos de los workspaces
-COPY apps/core-gateway/package.json apps/core-gateway/
-COPY packages/*/package.json packages/*/
-
-# Activar Yarn
+# Activar Yarn primero
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
-# Copiar TODO el monorepo (fuentes + packages)
-COPY . .
+WORKDIR /Sevens-Core
 
-# Instalar dependencias (monorepo completo)
+# --- CORRECCIÓN Y OPTIMIZACIÓN ---
+# 1. Copiar solo los manifiestos de dependencias.
+# Esto crea una capa que solo se invalida si los package.json o yarn.lock cambian.
+COPY package.json yarn.lock ./
+COPY apps/*/package.json ./apps/*/
+COPY packages/*/package.json ./packages/*/
+# Si tienes más carpetas con workspaces, añádelas aquí. Por ejemplo:
+# COPY infra/*/package.json ./infra/*/
+
+
+# 2. Instalar dependencias ANTES de copiar el resto del código fuente.
+# Esto asegura que los node_modules se guarden en una capa cacheads.
 RUN yarn install --immutable
 
-# Compilar core-gateway
-WORKDIR /Sevens-Core/apps/core-gateway
-RUN yarn build
+
+# 3. Ahora, copiar todo el código fuente.
+# Si solo cambias el código, Docker reutilizará la capa de 'yarn install' de arriba.
+COPY . .
+
+
+# 4. Compilar la aplicación específica.
+# No es necesario cambiar de directorio, puedes ejecutarlo desde la raíz.
+RUN yarn workspace @sevens/core-gateway build
 
 
 # --------------------------
@@ -33,15 +40,18 @@ FROM public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /var/task
 
-# Copiar dist de core-gateway
+# Copiar los artefactos de compilación desde la etapa 'builder'
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
 
-# Copiar node_modules de todo el monorepo
+# Copiar SOLO las dependencias de producción.
+# Esto crea una imagen final mucho más pequeña y segura.
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# Copiar workspaces internos (todos los que haya en packages/*)
-COPY --from=builder /Sevens-Core/packages ./node_modules/@sevens
+# NOTA: La siguiente línea es probablemente innecesaria y podría causar problemas.
+# La copia de node_modules de arriba ya debería incluir los workspaces
+# correctamente enlazados por Yarn. Te recomiendo eliminarla.
+# COPY --from=builder /Sevens-Core/packages ./node_modules/@sevens
 
 # Definir handler de Lambda
 CMD ["dist/main.handler"]
