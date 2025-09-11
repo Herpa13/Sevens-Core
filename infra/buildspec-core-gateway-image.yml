@@ -14,7 +14,7 @@ phases:
       - echo "Installing Yarn deps"
       - corepack enable
       - corepack prepare yarn@4.9.4 --activate
-      - yarn install
+      - yarn workspaces focus @sevens/core-gateway
       - echo "Setting ECR variables"
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - REGION=$AWS_DEFAULT_REGION
@@ -32,4 +32,9 @@ phases:
     commands:
       - echo "Docker push"
       - docker push ${REPO_URI}:${IMAGE_TAG}
-      - echo "Done"
+      - echo "IMAGE_URI=${REPO_URI}:${IMAGE_TAG}" > image-uri.txt
+      - echo "✅ Imagen subida: ${REPO_URI}:${IMAGE_TAG}"
+
+artifacts:
+  files:
+    - image-uri.txt
