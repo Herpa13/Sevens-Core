@@ -1,36 +1,47 @@
-# ===============================
-# Etapa 1: Builder
-# ===============================
+# --------------------------
+# Etapa de compilación
+# --------------------------
 FROM node:18 AS builder
 
-# Definir el directorio de trabajo
 WORKDIR /Sevens-Core
 
-# Copiamos TODO el monorepo (para resolver las dependencias entre workspaces)
-COPY . .
+# Copiar los manifiestos principales para aprovechar la caché
+COPY package.json yarn.lock ./
 
-# Activamos Yarn
+# Copiar los manifiestos de workspaces necesarios
+COPY apps/core-gateway/package.json apps/core-gateway/
+COPY packages/shared/package.json packages/shared/
+
+# Activar corepack con yarn v4
 RUN corepack enable && corepack prepare yarn@4.9.4 --activate
 
-# Instalamos solo lo necesario para core-gateway, pero con acceso a los demás workspaces
-RUN yarn workspaces focus @sevens/core-gateway --all
+# Instalar TODAS las dependencias (incluyendo workspaces)
+RUN yarn install --immutable
 
-# Compilamos el core-gateway
+# Copiar todo el código fuente del monorepo
+COPY . .
+
+# Compilar la app core-gateway
 WORKDIR /Sevens-Core/apps/core-gateway
 RUN yarn build
 
-# ===============================
-# Etapa 2: Runtime (Lambda)
-# ===============================
-FROM public.ecr.aws/lambda/nodejs:18 AS runtime
 
-# Directorio de trabajo de Lambda
+# --------------------------
+# Etapa final para Lambda
+# --------------------------
+FROM public.ecr.aws/lambda/nodejs:18
+
 WORKDIR /var/task
 
-# Copiamos dist, package.json y node_modules ya resueltos
+# Copiar los artefactos de build
 COPY --from=builder /Sevens-Core/apps/core-gateway/dist ./dist
 COPY --from=builder /Sevens-Core/apps/core-gateway/package.json ./
+
+# Copiar dependencias (node_modules del monorepo completo)
 COPY --from=builder /Sevens-Core/node_modules ./node_modules
 
-# Definir el handler de entrada
-CMD [ "dist/main.handler" ]
+# Copiar el paquete compartido (workspace)
+COPY --from=builder /Sevens-Core/packages/shared ./node_modules/@sevens/shared
+
+# Definir el handler para Lambda
+CMD ["dist/main.handler"]
