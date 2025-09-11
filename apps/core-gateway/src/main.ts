@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { ZodValidationPipe } from './zod.pipe';
-import serverless from 'serverless-http';
+import awsLambdaFastify from '@fastify/aws-lambda';
 
 let cachedHandler: any;
 
@@ -11,29 +11,25 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-
   app.useGlobalPipes(new ZodValidationPipe());
-
-  // ⚠️ En Lambda NO se hace `listen`, solo init
-  await app.init();
-
-  return app.getHttpAdapter().getInstance();
+  await app.init(); // en Lambda no hacemos listen
+  return app.getHttpAdapter().getInstance(); // Fastify instance
 }
 
-// 👇 handler usado en Lambda
+// Handler para AWS Lambda
 export const handler = async (event: any, context: any) => {
   if (!cachedHandler) {
     const fastifyApp = await bootstrap();
-    cachedHandler = serverless(fastifyApp);
+    cachedHandler = awsLambdaFastify(fastifyApp);
   }
   return cachedHandler(event, context);
 };
 
-// ⚠️ Solo si se ejecuta en local, arranca en puerto 3000
+// Arranque local (solo cuando ejecutas node dist/src/main.js fuera de Lambda)
 if (require.main === module) {
-  bootstrap().then(app =>
-    app.listen(3000, '0.0.0.0').then(() => {
-      console.log('🚀 App corriendo en http://localhost:3000');
-    }),
-  );
+  (async () => {
+    const fastifyApp = await bootstrap();
+    await fastifyApp.listen({ port: 3000, host: '0.0.0.0' });
+    console.log('🚀 App corriendo en http://localhost:3000');
+  })();
 }
