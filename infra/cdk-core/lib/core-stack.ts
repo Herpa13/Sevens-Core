@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as path from 'path';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
@@ -18,7 +19,7 @@ export class CoreStack extends cdk.Stack {
 
     const vpc = new ec2.Vpc(this, 'CoreVpc', {
       maxAzs: 2,
-      natGateways: 0
+      natGateways: 1
     });
 
     const lambdaSg = new ec2.SecurityGroup(this, 'CoreLambdaSg', { vpc });
@@ -57,7 +58,7 @@ export class CoreStack extends cdk.Stack {
       credentials: rds.Credentials.fromSecret(dbSecret),
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
       publiclyAccessible: false,
-      multiAz: true,
+      multiAz: false,
       securityGroups: [dbSg]
     });
 
@@ -81,6 +82,7 @@ export class CoreStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromInline('exports.handler=async()=>({statusCode:200,body:"ok"});'),
       vpc,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroups: [lambdaSg],
       environment: {
         DATABASE_HOST: proxy.endpoint,
@@ -91,8 +93,26 @@ export class CoreStack extends cdk.Stack {
     dbSecret.grantRead(fn);
     proxy.grantConnect(fn, 'coreuser');
 
-    const api = new apigateway.LambdaRestApi(this, 'CoreGatewayApi', {
-      handler: fn
+    const userPool = new cognito.UserPool(this, 'CoreUserPool', {
+      selfSignUpEnabled: false,
+      signInAliases: { email: true },
+    });
+
+    userPool.addClient('CoreUserPoolClient');
+
+    const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'CoreAuthorizer', {
+      cognitoUserPools: [userPool],
+    });
+
+    const api = new apigateway.RestApi(this, 'CoreGatewayApi', {
+      defaultMethodOptions: {
+        authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      },
+    });
+
+    api.root.addProxy({
+      defaultIntegration: new apigateway.LambdaIntegration(fn),
     });
 
     const queue = new sqs.Queue(this, 'CoreQueue');
@@ -119,6 +139,7 @@ export class CoreStack extends cdk.Stack {
       projectName: 'db-migrate',
       vpc,
       securityGroups: [lambdaSg],
+      subnetSelection: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL
@@ -131,7 +152,7 @@ export class CoreStack extends cdk.Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['corepack enable', 'yarn install --immutable']
+            commands: ['yum install -y jq', 'corepack enable', 'yarn install --immutable']
           },
           build: {
             commands: [
@@ -152,6 +173,7 @@ export class CoreStack extends cdk.Stack {
       projectName: 'openapi-publish',
       vpc,
       securityGroups: [lambdaSg],
+      subnetSelection: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL
@@ -181,6 +203,7 @@ export class CoreStack extends cdk.Stack {
       projectName: 'frontend-publish',
       vpc,
       securityGroups: [lambdaSg],
+      subnetSelection: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL
