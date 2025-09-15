@@ -106,6 +106,15 @@ export class CoreStack extends cdk.Stack {
       defaultBehavior: { origin: new origins.S3Origin(openApiBucket) },
     });
 
+    const frontendBucket = new s3.Bucket(this, 'FrontendBucket', {
+      websiteIndexDocument: 'index.html',
+    });
+
+    const frontendDistribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
+      defaultBehavior: { origin: new origins.S3Origin(frontendBucket), viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS },
+      defaultRootObject: 'index.html',
+    });
+
     const dbMigrate = new codebuild.Project(this, 'DbMigrateProject', {
       projectName: 'db-migrate',
       vpc,
@@ -168,6 +177,36 @@ export class CoreStack extends cdk.Stack {
 
     openApiBucket.grantReadWrite(openApiPublish);
 
+    const frontendPublish = new codebuild.Project(this, 'FrontendPublishProject', {
+      projectName: 'frontend-publish',
+      vpc,
+      securityGroups: [lambdaSg],
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.SMALL
+      },
+      environmentVariables: {
+        FRONTEND_BUCKET: { value: frontendBucket.bucketName },
+        VITE_API_BASE: { value: api.url }
+      },
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: {
+            commands: ['corepack enable', 'yarn install --immutable']
+          },
+          build: {
+            commands: [
+              'yarn build',
+              'aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete'
+            ]
+          }
+        }
+      })
+    });
+
+    frontendBucket.grantReadWrite(frontendPublish);
+
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url });
     new cdk.CfnOutput(this, 'DbInstanceArn', { value: db.instanceArn });
     new cdk.CfnOutput(this, 'RdsProxyEndpoint', { value: proxy.endpoint });
@@ -176,5 +215,7 @@ export class CoreStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'DbMigrateProjectName', { value: dbMigrate.projectName });
     new cdk.CfnOutput(this, 'OpenApiUrl', { value: `https://${openApiDistribution.domainName}/openapi.json` });
     new cdk.CfnOutput(this, 'OpenApiPublishProjectName', { value: openApiPublish.projectName });
+    new cdk.CfnOutput(this, 'FrontendUrl', { value: `https://${frontendDistribution.domainName}` });
+    new cdk.CfnOutput(this, 'FrontendPublishProjectName', { value: frontendPublish.projectName });
   }
 }

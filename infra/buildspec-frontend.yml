@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - corepack enable
+      - yarn install --immutable
+  build:
+    commands:
+      - yarn build
+      - aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete
