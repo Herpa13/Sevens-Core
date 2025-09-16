@@ -5,18 +5,23 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "📦 Instalando Yarn..."
-      - npm install -g corepack
-      - corepack enable
+      - echo "📦 Instalando pnpm..."
+      - npm install -g pnpm
       - echo "📦 Instalando dependencias del monorepo..."
-      - yarn install --immutable
+      - pnpm install --frozen-lockfile --store-dir /tmp/pnpm-store
   build:
     commands:
       - echo "🔨 Compilando todo el monorepo..."
-      - yarn build:all
+      - pnpm run build:all
       - echo "🚀 Desplegando infraestructura con CDK..."
-      - yarn cdk:synth
+      - pnpm run cdk:synth
       - npx cdk deploy CoreStack --require-approval never
+cache:
+  paths:
+    - '/root/.pnpm-store'
+    - 'node_modules/**/*'
+    - '**/node_modules/**/*'
+    - 'pnpm-lock.yaml'
 artifacts:
   files:
     - '**/*'
