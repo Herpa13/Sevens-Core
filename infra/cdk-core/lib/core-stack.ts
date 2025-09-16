@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as path from 'path';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
@@ -26,7 +25,7 @@ export class CoreStack extends cdk.Stack {
     const dbSg = new ec2.SecurityGroup(this, 'CoreDbSg', { vpc });
     const proxySg = new ec2.SecurityGroup(this, 'CoreProxySg', { vpc });
 
-    // VPC Endpoints for private connectivity to AWS services
+    // VPC Endpoints
     vpc.addGatewayEndpoint('S3Endpoint', {
       service: ec2.GatewayVpcEndpointAwsService.S3
     });
@@ -56,16 +55,14 @@ export class CoreStack extends cdk.Stack {
       }),
       vpc,
       credentials: rds.Credentials.fromSecret(dbSecret),
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }, // ✅ corregido
       publiclyAccessible: false,
       multiAz: false,
       securityGroups: [dbSg]
     });
 
     dbSecret.addRotationSchedule('CoreDbRotation', {
-      hostedRotation: secretsmanager.HostedRotation.postgreSqlSingleUser({
-        vpc
-      })
+      hostedRotation: secretsmanager.HostedRotation.postgreSqlSingleUser({ vpc })
     });
 
     const proxy = db.addProxy('CoreDbProxy', {
@@ -118,9 +115,7 @@ export class CoreStack extends cdk.Stack {
     const queue = new sqs.Queue(this, 'CoreQueue');
     const bucket = new s3.Bucket(this, 'CoreBucket');
 
-    const openApiBucket = new s3.Bucket(this, 'OpenApiBucket', {
-      versioned: true,
-    });
+    const openApiBucket = new s3.Bucket(this, 'OpenApiBucket', { versioned: true });
 
     const openApiDistribution = new cloudfront.Distribution(this, 'OpenApiDistribution', {
       defaultBehavior: { origin: new origins.S3Origin(openApiBucket) },
@@ -131,9 +126,14 @@ export class CoreStack extends cdk.Stack {
     });
 
     const frontendDistribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
-      defaultBehavior: { origin: new origins.S3Origin(frontendBucket), viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS },
+      defaultBehavior: {
+        origin: new origins.S3Origin(frontendBucket),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+      },
       defaultRootObject: 'index.html',
     });
+
+    // ---------------------- CodeBuild Projects ----------------------
 
     const dbMigrate = new codebuild.Project(this, 'DbMigrateProject', {
       projectName: 'db-migrate',
@@ -152,7 +152,7 @@ export class CoreStack extends cdk.Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['yum install -y jq', 'corepack enable', 'yarn install --immutable']
+            commands: ['yum install -y jq', 'pnpm install --frozen-lockfile']
           },
           build: {
             commands: [
@@ -184,12 +184,10 @@ export class CoreStack extends cdk.Stack {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          install: {
-            commands: ['corepack enable', 'yarn install --immutable']
-          },
+          install: { commands: ['pnpm install --frozen-lockfile'] },
           build: {
             commands: [
-              'yarn workspace @sevens/core-gateway openapi',
+              'pnpm --filter @sevens/core-gateway run openapi',
               'aws s3 cp apps/core-gateway/openapi.json s3://$OPENAPI_BUCKET/openapi.json'
             ]
           }
@@ -215,12 +213,10 @@ export class CoreStack extends cdk.Stack {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          install: {
-            commands: ['corepack enable', 'yarn install --immutable']
-          },
+          install: { commands: ['pnpm install --frozen-lockfile'] },
           build: {
             commands: [
-              'yarn build',
+              'pnpm run build',
               'aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete'
             ]
           }
@@ -229,6 +225,8 @@ export class CoreStack extends cdk.Stack {
     });
 
     frontendBucket.grantReadWrite(frontendPublish);
+
+    // ---------------------- Outputs ----------------------
 
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url });
     new cdk.CfnOutput(this, 'DbInstanceArn', { value: db.instanceArn });
