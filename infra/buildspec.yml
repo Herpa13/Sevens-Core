@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo "📦 Instalando pnpm..."
+      - npm install -g pnpm
+      - echo "📦 Instalando dependencias del monorepo..."
+      - pnpm install --frozen-lockfile --store-dir /tmp/pnpm-store
+  build:
+    commands:
+      - echo "🔨 Compilando todo el monorepo..."
+      - pnpm run build:all
+      - echo "🚀 Desplegando infraestructura con CDK..."
+      - npx cdk deploy CoreStack --require-approval never
+artifacts:
+  files:
+    - '**/*'
