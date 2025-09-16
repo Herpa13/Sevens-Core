@@ -1,26 +1,34 @@
+# Dependencias
+/node_modules
+**/node_modules
+
+# Yarn Berry
+.yarn/*
+!.yarn/releases/**
+!.yarn/plugins/**
+!.yarn/sdks/**
+!.yarn/versions/**
+
+# Archivos de PnP (solo si NO usas nodeLinker: node-modules)
+.pnp.*
+.pnp.js
+
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
+pnpm-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-cdk.out
-.yarn/
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Sistema
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+
+
