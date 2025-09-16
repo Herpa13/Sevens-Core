@@ -5,15 +5,17 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "📦 Instalando pnpm..."
-      - npm install -g pnpm
+      - echo "📦 Instalando Yarn..."
+      - npm install -g corepack
+      - corepack enable
       - echo "📦 Instalando dependencias del monorepo..."
-      - pnpm install --frozen-lockfile --store-dir /tmp/pnpm-store
+      - yarn install --immutable
   build:
     commands:
       - echo "🔨 Compilando todo el monorepo..."
-      - pnpm run build:all
+      - yarn build:all
       - echo "🚀 Desplegando infraestructura con CDK..."
+      - yarn cdk:synth
       - npx cdk deploy CoreStack --require-approval never
 artifacts:
   files:
