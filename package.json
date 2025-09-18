@@ -7,14 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "bootstrap": "yarn install",
-    "lint": "yarn workspaces foreach -Ap run lint",
-    "typecheck": "yarn workspaces foreach -Ap run typecheck",
-    "test": "yarn workspace @sevens/shared build && yarn workspace @sevens/db build && vitest run",
-    "build:all": "yarn workspaces foreach -Ap run build && yarn workspace @sevens/core-gateway openapi",
+    "bootstrap": "pnpm install",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm --filter @sevens/shared run build && pnpm --filter @sevens/db run build && vitest run",
+    "build:all": "pnpm -r run build && pnpm --filter @sevens/core-gateway run openapi",
     "check:entities": "node scripts/check-entities.js",
     "check:nomocks": "node scripts/check-nomocks.js",
-    "cdk:synth": "yarn workspace @sevens/cdk-core cdk:synth",
+    "cdk:synth": "pnpm --filter @sevens/cdk-core run cdk:synth",
     "db:seed": "prisma db seed"
   },
   "dependencies": {
@@ -42,5 +42,5 @@
     "packages/*",
     "infra/*"
   ],
- "packageManager": "pnpm@9.12.3"
+  "packageManager": "pnpm@9.12.3"
 }
