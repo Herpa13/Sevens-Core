@@ -39,6 +39,7 @@
     "seed": "node packages/db/prisma/seed.js"
   },
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
   "workspaces": [
@@ -51,11 +52,17 @@
 }
 
 =======
+=======
+>>>>>>> Stashed changes
   "packageManager": "pnpm@9.12.3",
   "pnpm": {
     "overrides": {
       "vite": "^5.4.20"
     }
   }
+<<<<<<< Updated upstream
+}
+>>>>>>> Stashed changes
+=======
 }
 >>>>>>> Stashed changes
