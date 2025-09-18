@@ -1,0 +1,35 @@
+{
+  "name": "sevens-core-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Monorepo para el proyecto Sevens Core",
+  "scripts": {
+    "build:all": "echo 'Añade aquí tu comando de compilación para todo el monorepo'",
+    "cdk:synth": "pnpm --filter cdk-core cdk synth",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "@prisma/client": "^5.19.0",
+    "jszip": "3.10.1",
+    "lodash-es": "^4.17.21",
+    "papaparse": "5.4.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@types/node": "^22.14.0",
+    "prisma": "^5.19.0",
+    "typescript": "~5.8.2",
+    "vite": "^5.4.20",
+    "vite-tsconfig-paths": "4",
+    "vitest": "^1.6.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "^5.4.20"
+    }
+  }
+}
