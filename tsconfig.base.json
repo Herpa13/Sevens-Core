@@ -10,6 +10,23 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "composite": true,
+    "declarationMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "@sevens/db": ["packages/db/src"],
+      "@sevens/db/*": ["packages/db/src/*"],
+      "@sevens/shared": ["packages/shared/src"],
+      "@sevens/shared/*": ["packages/shared/src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "views",
+    "src/views", 
+    "tests"
+  ]
 }

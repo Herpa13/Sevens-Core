@@ -1,0 +1,18 @@
+{
+  // Hereda las reglas comunes
+  "extends": "../../tsconfig.base.json",
+
+  // Reglas específicas para este paquete
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+
+  // Archivos a compilar
+  "include": ["src"],
+
+  // ¡Importante! Le dice a TypeScript que este proyecto depende de "shared"
+  "references": [
+    { "path": "../shared" }
+  ]
+}

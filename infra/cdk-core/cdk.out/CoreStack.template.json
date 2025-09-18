@@ -1,0 +1,2873 @@
+{
+ "Transform": "AWS::SecretsManager-2020-07-23",
+ "Resources": {
+  "CoreVpcB2509D56": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/Resource"
+   }
+  },
+  "CoreVpcPublicSubnet1SubnetBFAB563C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/Subnet"
+   }
+  },
+  "CoreVpcPublicSubnet1RouteTable697D2E7A": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/RouteTable"
+   }
+  },
+  "CoreVpcPublicSubnet1RouteTableAssociation82A00562": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "CoreVpcPublicSubnet1RouteTable697D2E7A"
+    },
+    "SubnetId": {
+     "Ref": "CoreVpcPublicSubnet1SubnetBFAB563C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "CoreVpcPublicSubnet1DefaultRouteA0211814": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "CoreVpcIGWC3C68BEA"
+    },
+    "RouteTableId": {
+     "Ref": "CoreVpcPublicSubnet1RouteTable697D2E7A"
+    }
+   },
+   "DependsOn": [
+    "CoreVpcVPCGWD1DFE535"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "CoreVpcPublicSubnet1EIP66768B4F": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/EIP"
+   }
+  },
+  "CoreVpcPublicSubnet1NATGateway48D9585E": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "CoreVpcPublicSubnet1EIP66768B4F",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "CoreVpcPublicSubnet1SubnetBFAB563C"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "CoreVpcPublicSubnet1DefaultRouteA0211814",
+    "CoreVpcPublicSubnet1RouteTableAssociation82A00562"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet1/NATGateway"
+   }
+  },
+  "CoreVpcPublicSubnet2Subnet394BC44D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.64.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet2/Subnet"
+   }
+  },
+  "CoreVpcPublicSubnet2RouteTableDE77D4A5": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet2/RouteTable"
+   }
+  },
+  "CoreVpcPublicSubnet2RouteTableAssociation90FAE9E9": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "CoreVpcPublicSubnet2RouteTableDE77D4A5"
+    },
+    "SubnetId": {
+     "Ref": "CoreVpcPublicSubnet2Subnet394BC44D"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "CoreVpcPublicSubnet2DefaultRoute08BB7603": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "CoreVpcIGWC3C68BEA"
+    },
+    "RouteTableId": {
+     "Ref": "CoreVpcPublicSubnet2RouteTableDE77D4A5"
+    }
+   },
+   "DependsOn": [
+    "CoreVpcVPCGWD1DFE535"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "CoreVpcPrivateSubnet1Subnet30A154AF": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.128.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet1/Subnet"
+   }
+  },
+  "CoreVpcPrivateSubnet1RouteTableA2DA400B": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet1/RouteTable"
+   }
+  },
+  "CoreVpcPrivateSubnet1RouteTableAssociation3C513F5F": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "CoreVpcPrivateSubnet1RouteTableA2DA400B"
+    },
+    "SubnetId": {
+     "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet1/RouteTableAssociation"
+   }
+  },
+  "CoreVpcPrivateSubnet1DefaultRoute13737D3E": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "CoreVpcPublicSubnet1NATGateway48D9585E"
+    },
+    "RouteTableId": {
+     "Ref": "CoreVpcPrivateSubnet1RouteTableA2DA400B"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet1/DefaultRoute"
+   }
+  },
+  "CoreVpcPrivateSubnet2SubnetE1E23F29": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.192.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet2/Subnet"
+   }
+  },
+  "CoreVpcPrivateSubnet2RouteTable338D48D1": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet2/RouteTable"
+   }
+  },
+  "CoreVpcPrivateSubnet2RouteTableAssociation02F0DECD": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "CoreVpcPrivateSubnet2RouteTable338D48D1"
+    },
+    "SubnetId": {
+     "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet2/RouteTableAssociation"
+   }
+  },
+  "CoreVpcPrivateSubnet2DefaultRoute9C4AA22D": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "CoreVpcPublicSubnet1NATGateway48D9585E"
+    },
+    "RouteTableId": {
+     "Ref": "CoreVpcPrivateSubnet2RouteTable338D48D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/PrivateSubnet2/DefaultRoute"
+   }
+  },
+  "CoreVpcIGWC3C68BEA": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/IGW"
+   }
+  },
+  "CoreVpcVPCGWD1DFE535": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "CoreVpcIGWC3C68BEA"
+    },
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/VPCGW"
+   }
+  },
+  "CoreVpcS3EndpointFEE080E6": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1RouteTableA2DA400B"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2RouteTable338D48D1"
+     },
+     {
+      "Ref": "CoreVpcPublicSubnet1RouteTable697D2E7A"
+     },
+     {
+      "Ref": "CoreVpcPublicSubnet2RouteTableDE77D4A5"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ],
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/S3Endpoint/Resource"
+   }
+  },
+  "CoreVpcSecretsManagerEndpoint42A9CCCC": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "CoreLambdaSg20A61E1C",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.secretsmanager",
+    "SubnetIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/SecretsManagerEndpoint/Resource"
+   }
+  },
+  "CoreVpcLogsEndpoint3F23A81B": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "CoreLambdaSg20A61E1C",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.logs",
+    "SubnetIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/LogsEndpoint/Resource"
+   }
+  },
+  "CoreVpcApiGatewayEndpoint32AA0C91": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "CoreLambdaSg20A61E1C",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.execute-api",
+    "SubnetIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CoreStack/CoreVpc"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreVpc/ApiGatewayEndpoint/Resource"
+   }
+  },
+  "CoreLambdaSg20A61E1C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "CoreStack/CoreLambdaSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "CoreVpcB2509D56",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "CoreVpcB2509D56",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreLambdaSg/Resource"
+   }
+  },
+  "CoreDbSg075192C3": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "CoreStack/CoreDbSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSg/Resource"
+   }
+  },
+  "CoreDbSgfromCoreStackCoreProxySg8301D32FIndirectPortD99AB4E2": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Allow connections to the database Instance from the Proxy",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "CoreDbE4DEAC87",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "CoreDbSg075192C3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "CoreProxySgC71AB68A",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "CoreDbE4DEAC87",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSg/from CoreStackCoreProxySg8301D32F:{IndirectPort}"
+   }
+  },
+  "CoreDbSgfromCoreStackCoreProxySg8301D32F5432C6E7EE73": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from CoreStackCoreProxySg8301D32F:5432",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "CoreDbSg075192C3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "CoreProxySgC71AB68A",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSg/from CoreStackCoreProxySg8301D32F:5432"
+   }
+  },
+  "CoreProxySgC71AB68A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "CoreStack/CoreProxySg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreProxySg/Resource"
+   }
+  },
+  "CoreProxySgfromCoreStackCoreLambdaSg443C0DCD5432799655B4": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from CoreStackCoreLambdaSg443C0DCD:5432",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "CoreProxySgC71AB68A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "CoreLambdaSg20A61E1C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreProxySg/from CoreStackCoreLambdaSg443C0DCD:5432"
+   }
+  },
+  "CoreDbSecretA1369E69": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"coreuser\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSecret/Resource"
+   }
+  },
+  "CoreDbSecretAttachment847270B0": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "CoreDbSecretA1369E69"
+    },
+    "TargetId": {
+     "Ref": "CoreDbE4DEAC87"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSecret/Attachment/Resource"
+   }
+  },
+  "CoreDbSecretCoreDbRotationSecurityGroup62DD6311": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "CoreStack/CoreDbSecret/CoreDbRotation/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "CoreVpcB2509D56"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSecret/CoreDbRotation/SecurityGroup/Resource"
+   }
+  },
+  "CoreDbSecretCoreDbRotationF211E775": {
+   "Type": "AWS::SecretsManager::RotationSchedule",
+   "Properties": {
+    "HostedRotationLambda": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "RotationType": "PostgreSQLSingleUser",
+     "VpcSecurityGroupIds": {
+      "Fn::GetAtt": [
+       "CoreDbSecretCoreDbRotationSecurityGroup62DD6311",
+       "GroupId"
+      ]
+     },
+     "VpcSubnetIds": {
+      "Fn::Join": [
+       "",
+       [
+        {
+         "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+        },
+        ",",
+        {
+         "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+        }
+       ]
+      ]
+     }
+    },
+    "RotationRules": {
+     "ScheduleExpression": "rate(30 days)"
+    },
+    "SecretId": {
+     "Ref": "CoreDbSecretA1369E69"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSecret/CoreDbRotation/Resource"
+   }
+  },
+  "CoreDbSecretPolicy5DC77CFD": {
+   "Type": "AWS::SecretsManager::ResourcePolicy",
+   "Properties": {
+    "ResourcePolicy": {
+     "Statement": [
+      {
+       "Action": "secretsmanager:DeleteSecret",
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::111111111111:root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "SecretId": {
+     "Ref": "CoreDbSecretA1369E69"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDbSecret/Policy/Resource"
+   }
+  },
+  "CoreDbSubnetGroup3923B79B": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for CoreDb database",
+    "SubnetIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/SubnetGroup/Default"
+   }
+  },
+  "CoreDbE4DEAC87": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "100",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.m5.large",
+    "DBSubnetGroupName": {
+     "Ref": "CoreDbSubnetGroup3923B79B"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "16.3",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "CoreDbSecretA1369E69"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "CoreDbSecretA1369E69"
+       },
+       ":SecretString:username::}}"
+      ]
+     ]
+    },
+    "MultiAZ": false,
+    "PubliclyAccessible": false,
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "CoreDbSg075192C3",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Snapshot",
+   "DeletionPolicy": "Snapshot",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/Resource"
+   }
+  },
+  "CoreDbCoreDbProxyIAMRoleA20BC709": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "rds.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/CoreDbProxy/IAMRole/Resource"
+   }
+  },
+  "CoreDbCoreDbProxyIAMRoleDefaultPolicy0A80926D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "CoreDbSecretA1369E69"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CoreDbCoreDbProxyIAMRoleDefaultPolicy0A80926D",
+    "Roles": [
+     {
+      "Ref": "CoreDbCoreDbProxyIAMRoleA20BC709"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/CoreDbProxy/IAMRole/DefaultPolicy/Resource"
+   }
+  },
+  "CoreDbCoreDbProxy97F0332B": {
+   "Type": "AWS::RDS::DBProxy",
+   "Properties": {
+    "Auth": [
+     {
+      "AuthScheme": "SECRETS",
+      "IAMAuth": "DISABLED",
+      "SecretArn": {
+       "Ref": "CoreDbSecretA1369E69"
+      }
+     }
+    ],
+    "DBProxyName": "CoreDbProxy",
+    "EngineFamily": "POSTGRESQL",
+    "RequireTLS": true,
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "CoreDbCoreDbProxyIAMRoleA20BC709",
+      "Arn"
+     ]
+    },
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "CoreProxySgC71AB68A",
+       "GroupId"
+      ]
+     }
+    ],
+    "VpcSubnetIds": [
+     {
+      "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+     },
+     {
+      "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/CoreDbProxy/Resource"
+   }
+  },
+  "CoreDbCoreDbProxyProxyTargetGroup419E1A3E": {
+   "Type": "AWS::RDS::DBProxyTargetGroup",
+   "Properties": {
+    "ConnectionPoolConfigurationInfo": {},
+    "DBInstanceIdentifiers": [
+     {
+      "Ref": "CoreDbE4DEAC87"
+     }
+    ],
+    "DBProxyName": {
+     "Ref": "CoreDbCoreDbProxy97F0332B"
+    },
+    "TargetGroupName": "default"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreDb/CoreDbProxy/ProxyTargetGroup"
+   }
+  },
+  "CoreGatewayFnServiceRole34C0306D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "CoreVpcPrivateSubnet1DefaultRoute13737D3E",
+    "CoreVpcPrivateSubnet1RouteTableAssociation3C513F5F",
+    "CoreVpcPrivateSubnet2DefaultRoute9C4AA22D",
+    "CoreVpcPrivateSubnet2RouteTableAssociation02F0DECD"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayFn/ServiceRole/Resource"
+   }
+  },
+  "CoreGatewayFnServiceRoleDefaultPolicy42B9029D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "CoreDbSecretA1369E69"
+       }
+      },
+      {
+       "Action": "rds-db:connect",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":rds-db:us-east-1:111111111111:dbuser:",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Fn::GetAtt": [
+                "CoreDbCoreDbProxy97F0332B",
+                "DBProxyArn"
+               ]
+              }
+             ]
+            }
+           ]
+          },
+          "/coreuser"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CoreGatewayFnServiceRoleDefaultPolicy42B9029D",
+    "Roles": [
+     {
+      "Ref": "CoreGatewayFnServiceRole34C0306D"
+     }
+    ]
+   },
+   "DependsOn": [
+    "CoreVpcPrivateSubnet1DefaultRoute13737D3E",
+    "CoreVpcPrivateSubnet1RouteTableAssociation3C513F5F",
+    "CoreVpcPrivateSubnet2DefaultRoute9C4AA22D",
+    "CoreVpcPrivateSubnet2RouteTableAssociation02F0DECD"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayFn/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CoreGatewayFnCF38CCB6": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ZipFile": "exports.handler=async()=>({statusCode:200,body:\"ok\"});"
+    },
+    "Environment": {
+     "Variables": {
+      "DATABASE_HOST": {
+       "Fn::GetAtt": [
+        "CoreDbCoreDbProxy97F0332B",
+        "Endpoint"
+       ]
+      },
+      "DB_SECRET_ARN": {
+       "Ref": "CoreDbSecretA1369E69"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CoreGatewayFnServiceRole34C0306D",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "CoreLambdaSg20A61E1C",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+      },
+      {
+       "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "CoreGatewayFnServiceRoleDefaultPolicy42B9029D",
+    "CoreGatewayFnServiceRole34C0306D",
+    "CoreVpcPrivateSubnet1DefaultRoute13737D3E",
+    "CoreVpcPrivateSubnet1RouteTableAssociation3C513F5F",
+    "CoreVpcPrivateSubnet2DefaultRoute9C4AA22D",
+    "CoreVpcPrivateSubnet2RouteTableAssociation02F0DECD"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayFn/Resource"
+   }
+  },
+  "CoreUserPoolD16FE657": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreUserPool/Resource"
+   }
+  },
+  "CoreUserPoolCoreUserPoolClientB6EAD2DA": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "implicit",
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "UserPoolId": {
+     "Ref": "CoreUserPoolD16FE657"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreUserPool/CoreUserPoolClient/Resource"
+   }
+  },
+  "CoreAuthorizerAB99A484": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "CoreStackCoreAuthorizer5C839081",
+    "ProviderARNs": [
+     {
+      "Fn::GetAtt": [
+       "CoreUserPoolD16FE657",
+       "Arn"
+      ]
+     }
+    ],
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreAuthorizer/Resource"
+   }
+  },
+  "CoreGatewayApiE57B3CE7": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "CoreGatewayApi"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Resource"
+   }
+  },
+  "CoreGatewayApiCloudWatchRoleCED2746F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/CloudWatchRole/Resource"
+   }
+  },
+  "CoreGatewayApiAccount0BE2785C": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "CoreGatewayApiCloudWatchRoleCED2746F",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "CoreGatewayApiE57B3CE7"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Account"
+   }
+  },
+  "CoreGatewayApiDeploymentB625465D48201d317725d9830342241f3e2b2ef8": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Automatically created by the RestApi construct",
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    }
+   },
+   "DependsOn": [
+    "CoreGatewayApiproxyANY0BFE3049",
+    "CoreGatewayApiproxyF4EFA72B",
+    "CoreGatewayApiANYA4F7F416"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "CoreGatewayApiDeploymentStageprod054CB900": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "CoreGatewayApiDeploymentB625465D48201d317725d9830342241f3e2b2ef8"
+    },
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "CoreGatewayApiAccount0BE2785C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "CoreGatewayApiproxyF4EFA72B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "CoreGatewayApiE57B3CE7",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "{proxy+}",
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Default/{proxy+}/Resource"
+   }
+  },
+  "CoreGatewayApiproxyANYApiPermissionCoreStackCoreGatewayApi1097126CANYproxy26A6A76D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CoreGatewayFnCF38CCB6",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:111111111111:",
+       {
+        "Ref": "CoreGatewayApiE57B3CE7"
+       },
+       "/",
+       {
+        "Ref": "CoreGatewayApiDeploymentStageprod054CB900"
+       },
+       "/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Default/{proxy+}/ANY/ApiPermission.CoreStackCoreGatewayApi1097126C.ANY..{proxy+}"
+   }
+  },
+  "CoreGatewayApiproxyANYApiPermissionTestCoreStackCoreGatewayApi1097126CANYproxyB9405829": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "CoreGatewayFnCF38CCB6",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:111111111111:",
+       {
+        "Ref": "CoreGatewayApiE57B3CE7"
+       },
+       "/test-invoke-stage/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Default/{proxy+}/ANY/ApiPermission.Test.CoreStackCoreGatewayApi1097126C.ANY..{proxy+}"
+   }
+  },
+  "CoreGatewayApiproxyANY0BFE3049": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CoreAuthorizerAB99A484"
+    },
+    "HttpMethod": "ANY",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "CoreGatewayFnCF38CCB6",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "CoreGatewayApiproxyF4EFA72B"
+    },
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Default/{proxy+}/ANY/Resource"
+   }
+  },
+  "CoreGatewayApiANYA4F7F416": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CoreAuthorizerAB99A484"
+    },
+    "HttpMethod": "ANY",
+    "Integration": {
+     "Type": "MOCK"
+    },
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "CoreGatewayApiE57B3CE7",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "CoreGatewayApiE57B3CE7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreGatewayApi/Default/ANY/Resource"
+   }
+  },
+  "CoreQueueAAD74677": {
+   "Type": "AWS::SQS::Queue",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreQueue/Resource"
+   }
+  },
+  "CoreBucket9FD5544F": {
+   "Type": "AWS::S3::Bucket",
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CoreBucket/Resource"
+   }
+  },
+  "OpenApiBucket2F7F7D8D": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiBucket/Resource"
+   }
+  },
+  "OpenApiBucketPolicy0F39B14F": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "OpenApiBucket2F7F7D8D"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "CanonicalUser": {
+         "Fn::GetAtt": [
+          "OpenApiDistributionOrigin1S3Origin7E486E35",
+          "S3CanonicalUserId"
+         ]
+        }
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "OpenApiBucket2F7F7D8D",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiBucket/Policy/Resource"
+   }
+  },
+  "OpenApiDistributionOrigin1S3Origin7E486E35": {
+   "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+   "Properties": {
+    "CloudFrontOriginAccessIdentityConfig": {
+     "Comment": "Identity for CoreStackOpenApiDistributionOrigin1A79E2CD4"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiDistribution/Origin1/S3Origin/Resource"
+   }
+  },
+  "OpenApiDistributionDD71B494": {
+   "Type": "AWS::CloudFront::Distribution",
+   "Properties": {
+    "DistributionConfig": {
+     "DefaultCacheBehavior": {
+      "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+      "Compress": true,
+      "TargetOriginId": "CoreStackOpenApiDistributionOrigin1A79E2CD4",
+      "ViewerProtocolPolicy": "allow-all"
+     },
+     "Enabled": true,
+     "HttpVersion": "http2",
+     "IPV6Enabled": true,
+     "Origins": [
+      {
+       "DomainName": {
+        "Fn::GetAtt": [
+         "OpenApiBucket2F7F7D8D",
+         "RegionalDomainName"
+        ]
+       },
+       "Id": "CoreStackOpenApiDistributionOrigin1A79E2CD4",
+       "S3OriginConfig": {
+        "OriginAccessIdentity": {
+         "Fn::Join": [
+          "",
+          [
+           "origin-access-identity/cloudfront/",
+           {
+            "Ref": "OpenApiDistributionOrigin1S3Origin7E486E35"
+           }
+          ]
+         ]
+        }
+       }
+      }
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiDistribution/Resource"
+   }
+  },
+  "FrontendBucketEFE2E19C": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "WebsiteConfiguration": {
+     "IndexDocument": "index.html"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendBucket/Resource"
+   }
+  },
+  "FrontendDistributionE6EAF405": {
+   "Type": "AWS::CloudFront::Distribution",
+   "Properties": {
+    "DistributionConfig": {
+     "DefaultCacheBehavior": {
+      "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+      "Compress": true,
+      "TargetOriginId": "CoreStackFrontendDistributionOrigin1CA46BCEB",
+      "ViewerProtocolPolicy": "redirect-to-https"
+     },
+     "DefaultRootObject": "index.html",
+     "Enabled": true,
+     "HttpVersion": "http2",
+     "IPV6Enabled": true,
+     "Origins": [
+      {
+       "CustomOriginConfig": {
+        "OriginProtocolPolicy": "http-only",
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::Select": [
+         2,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::GetAtt": [
+             "FrontendBucketEFE2E19C",
+             "WebsiteURL"
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "Id": "CoreStackFrontendDistributionOrigin1CA46BCEB"
+      }
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendDistribution/Resource"
+   }
+  },
+  "DbMigrateProjectRole37C0A3B1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/DbMigrateProject/Role/Resource"
+   }
+  },
+  "DbMigrateProjectRoleDefaultPolicy716257FB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:CreateNetworkInterfacePermission",
+       "Condition": {
+        "StringEquals": {
+         "ec2:Subnet": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+             }
+            ]
+           ]
+          },
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+             }
+            ]
+           ]
+          }
+         ],
+         "ec2:AuthorizedService": "codebuild.amazonaws.com"
+        }
+       },
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ec2:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":network-interface/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "DbMigrateProjectE6A46868"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "DbMigrateProjectE6A46868"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codebuild:us-east-1:111111111111:report-group/",
+          {
+           "Ref": "DbMigrateProjectE6A46868"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "CoreDbSecretA1369E69"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DbMigrateProjectRoleDefaultPolicy716257FB",
+    "Roles": [
+     {
+      "Ref": "DbMigrateProjectRole37C0A3B1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/DbMigrateProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "DbMigrateProjectE6A46868": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "EnvironmentVariables": [
+      {
+       "Name": "DB_SECRET_ARN",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Ref": "CoreDbSecretA1369E69"
+       }
+      },
+      {
+       "Name": "DATABASE_HOST",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Fn::GetAtt": [
+         "CoreDbCoreDbProxy97F0332B",
+         "Endpoint"
+        ]
+       }
+      }
+     ],
+     "Image": "aws/codebuild/standard:7.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "db-migrate",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "DbMigrateProjectRole37C0A3B1",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"yum install -y jq\",\n        \"pnpm install --frozen-lockfile\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"SECRET=$(aws secretsmanager get-secret-value --secret-id $DB_SECRET_ARN --query SecretString --output text)\",\n        \"USER=$(echo $SECRET | jq -r .username)\",\n        \"PASS=$(echo $SECRET | jq -r .password)\",\n        \"export DATABASE_URL=\\\"postgresql://$USER:$PASS@$DATABASE_HOST:5432/postgres\\\"\",\n        \"npx prisma migrate deploy --schema packages/db/prisma/schema.prisma\"\n      ]\n    }\n  }\n}",
+     "Type": "NO_SOURCE"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "CoreLambdaSg20A61E1C",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      {
+       "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+      },
+      {
+       "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+      }
+     ],
+     "VpcId": {
+      "Ref": "CoreVpcB2509D56"
+     }
+    }
+   },
+   "DependsOn": [
+    "DbMigrateProjectPolicyDocument659E76B4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/DbMigrateProject/Resource"
+   }
+  },
+  "DbMigrateProjectPolicyDocument659E76B4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeDhcpOptions",
+        "ec2:DescribeVpcs"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DbMigrateProjectPolicyDocument659E76B4",
+    "Roles": [
+     {
+      "Ref": "DbMigrateProjectRole37C0A3B1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/DbMigrateProject/PolicyDocument/Resource"
+   }
+  },
+  "OpenApiPublishProjectRole0B3BCC3F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiPublishProject/Role/Resource"
+   }
+  },
+  "OpenApiPublishProjectRoleDefaultPolicyCE3A78F1": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:CreateNetworkInterfacePermission",
+       "Condition": {
+        "StringEquals": {
+         "ec2:Subnet": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+             }
+            ]
+           ]
+          },
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+             }
+            ]
+           ]
+          }
+         ],
+         "ec2:AuthorizedService": "codebuild.amazonaws.com"
+        }
+       },
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ec2:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":network-interface/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "OpenApiPublishProject1F03FE64"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "OpenApiPublishProject1F03FE64"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codebuild:us-east-1:111111111111:report-group/",
+          {
+           "Ref": "OpenApiPublishProject1F03FE64"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "OpenApiBucket2F7F7D8D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "OpenApiBucket2F7F7D8D",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "OpenApiPublishProjectRoleDefaultPolicyCE3A78F1",
+    "Roles": [
+     {
+      "Ref": "OpenApiPublishProjectRole0B3BCC3F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiPublishProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "OpenApiPublishProject1F03FE64": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "EnvironmentVariables": [
+      {
+       "Name": "OPENAPI_BUCKET",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Ref": "OpenApiBucket2F7F7D8D"
+       }
+      }
+     ],
+     "Image": "aws/codebuild/standard:7.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "openapi-publish",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "OpenApiPublishProjectRole0B3BCC3F",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"pnpm install --frozen-lockfile\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"pnpm --filter @sevens/core-gateway run openapi\",\n        \"aws s3 cp apps/core-gateway/openapi.json s3://$OPENAPI_BUCKET/openapi.json\"\n      ]\n    }\n  }\n}",
+     "Type": "NO_SOURCE"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "CoreLambdaSg20A61E1C",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      {
+       "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+      },
+      {
+       "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+      }
+     ],
+     "VpcId": {
+      "Ref": "CoreVpcB2509D56"
+     }
+    }
+   },
+   "DependsOn": [
+    "OpenApiPublishProjectPolicyDocumentE310A21F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiPublishProject/Resource"
+   }
+  },
+  "OpenApiPublishProjectPolicyDocumentE310A21F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeDhcpOptions",
+        "ec2:DescribeVpcs"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "OpenApiPublishProjectPolicyDocumentE310A21F",
+    "Roles": [
+     {
+      "Ref": "OpenApiPublishProjectRole0B3BCC3F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/OpenApiPublishProject/PolicyDocument/Resource"
+   }
+  },
+  "FrontendPublishProjectRoleD7715754": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendPublishProject/Role/Resource"
+   }
+  },
+  "FrontendPublishProjectRoleDefaultPolicy3D3EA22C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:CreateNetworkInterfacePermission",
+       "Condition": {
+        "StringEquals": {
+         "ec2:Subnet": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+             }
+            ]
+           ]
+          },
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":subnet/",
+             {
+              "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+             }
+            ]
+           ]
+          }
+         ],
+         "ec2:AuthorizedService": "codebuild.amazonaws.com"
+        }
+       },
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ec2:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":network-interface/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "FrontendPublishProject4C74BFD1"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:us-east-1:111111111111:log-group:/aws/codebuild/",
+           {
+            "Ref": "FrontendPublishProject4C74BFD1"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codebuild:us-east-1:111111111111:report-group/",
+          {
+           "Ref": "FrontendPublishProject4C74BFD1"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "FrontendBucketEFE2E19C",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "FrontendBucketEFE2E19C",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FrontendPublishProjectRoleDefaultPolicy3D3EA22C",
+    "Roles": [
+     {
+      "Ref": "FrontendPublishProjectRoleD7715754"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendPublishProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "FrontendPublishProject4C74BFD1": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "EnvironmentVariables": [
+      {
+       "Name": "FRONTEND_BUCKET",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Ref": "FrontendBucketEFE2E19C"
+       }
+      },
+      {
+       "Name": "VITE_API_BASE",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Fn::Join": [
+         "",
+         [
+          "https://",
+          {
+           "Ref": "CoreGatewayApiE57B3CE7"
+          },
+          ".execute-api.us-east-1.",
+          {
+           "Ref": "AWS::URLSuffix"
+          },
+          "/",
+          {
+           "Ref": "CoreGatewayApiDeploymentStageprod054CB900"
+          },
+          "/"
+         ]
+        ]
+       }
+      }
+     ],
+     "Image": "aws/codebuild/standard:7.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "Name": "frontend-publish",
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "FrontendPublishProjectRoleD7715754",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"pnpm install --frozen-lockfile\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"pnpm run build\",\n        \"aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete\"\n      ]\n    }\n  }\n}",
+     "Type": "NO_SOURCE"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "CoreLambdaSg20A61E1C",
+        "GroupId"
+       ]
+      }
+     ],
+     "Subnets": [
+      {
+       "Ref": "CoreVpcPrivateSubnet1Subnet30A154AF"
+      },
+      {
+       "Ref": "CoreVpcPrivateSubnet2SubnetE1E23F29"
+      }
+     ],
+     "VpcId": {
+      "Ref": "CoreVpcB2509D56"
+     }
+    }
+   },
+   "DependsOn": [
+    "FrontendPublishProjectPolicyDocumentFC5943F7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendPublishProject/Resource"
+   }
+  },
+  "FrontendPublishProjectPolicyDocumentFC5943F7": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeDhcpOptions",
+        "ec2:DescribeVpcs"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FrontendPublishProjectPolicyDocumentFC5943F7",
+    "Roles": [
+     {
+      "Ref": "FrontendPublishProjectRoleD7715754"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/FrontendPublishProject/PolicyDocument/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31TTXObMBD9LbnLauJODz36I8n40Ibi1NeOEGu8NkhUu4rravjvHRBgUk972rdPb5f9Yi7nD5/k/Z0600znp1mJmQxbVvok1Jl+BNBzGXa1Fqu92SUrkfisRL31mQFuuStKrWd4VVkJV/7KLYisRsVozShuweMmac1Xxc+K4awuInH4phiuiTeGwRkYBbGS3lswK32owLDomV2tH01eWzTcS0e3y7RXGqaaLWjvkC/Pzvq6K/2/xMYUDoga4XKSYa1YZYpgC9oBi8HdGGJlNIjYxZhpvbwhRukQmzj76xLf/oavyhV9cCOo+yRVyqgCnAyx0LaKaKJ4Mp9RcPOSWu42s9UHyH1c4A2XAlnvNCS2RN1V9Z5pBKpKhtQO8SWIq3bQlKrKciXDkzd6OIYpTsBVSITWNELbwiBbGb4TuMTashWMeACrEvvu3jONUDUW8SZkWMVcg4QWng/W4W9wbeTES4F4UWPf3wAXWltvWKyhLu1lGOfE27Iq4uF3YBjNUhGIbncDMx2c+AJ8sHlLRdQI+kkyfPPgO2EHGkEfZVh6fYr/Q4+iuU546jdCl9bne2cNy7BGYoeZ72b84rDAth8g2uRgGLkLX7UBT23AvxTTNO1ycsg8lrkMibNH0F1tPWwaMe33xXPtuRHG5iCP9OFtPpcPn+X93ZEQZ84bxgpkGu0fyOuXrpIEAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "CoreStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "CoreGatewayApiEndpointDBBD290B": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "CoreGatewayApiE57B3CE7"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "CoreGatewayApiDeploymentStageprod054CB900"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "CoreGatewayApiE57B3CE7"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "CoreGatewayApiDeploymentStageprod054CB900"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "DbInstanceArn": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "arn:",
+      {
+       "Ref": "AWS::Partition"
+      },
+      ":rds:us-east-1:111111111111:db:",
+      {
+       "Ref": "CoreDbE4DEAC87"
+      }
+     ]
+    ]
+   }
+  },
+  "RdsProxyEndpoint": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CoreDbCoreDbProxy97F0332B",
+     "Endpoint"
+    ]
+   }
+  },
+  "QueueArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CoreQueueAAD74677",
+     "Arn"
+    ]
+   }
+  },
+  "BucketArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CoreBucket9FD5544F",
+     "Arn"
+    ]
+   }
+  },
+  "DbMigrateProjectName": {
+   "Value": {
+    "Ref": "DbMigrateProjectE6A46868"
+   }
+  },
+  "OpenApiUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "OpenApiDistributionDD71B494",
+        "DomainName"
+       ]
+      },
+      "/openapi.json"
+     ]
+    ]
+   }
+  },
+  "OpenApiPublishProjectName": {
+   "Value": {
+    "Ref": "OpenApiPublishProject1F03FE64"
+   }
+  },
+  "FrontendUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "FrontendDistributionE6EAF405",
+        "DomainName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "FrontendPublishProjectName": {
+   "Value": {
+    "Ref": "FrontendPublishProject4C74BFD1"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

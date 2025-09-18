@@ -1,14 +1,19 @@
 {
+  // Hereda las reglas comunes
+  "extends": "../../tsconfig.base.json",
+
+  // Reglas específicas para esta aplicación
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "rootDir": "./",
     "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "skipLibCheck": true
+    "rootDir": "src"
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+
+  // Archivos a compilar
+  "include": ["src"],
+
+  // ¡Importante! Declara las dos dependencias del proyecto
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/db" }
+  ]
 }

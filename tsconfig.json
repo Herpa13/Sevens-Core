@@ -1,29 +1,15 @@
+// tsconfig.json (en la raíz)
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "skipLibCheck": true,
-    "types": [
-      "node"
-    ],
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
-  }
+  // Hereda todas las reglas, incluyendo los "paths"
+  "extends": "./tsconfig.base.json",
+
+  // No compila nada por sí mismo
+  "files": [],
+
+  // Le dice a "tsc --build" qué proyectos compilar y en qué orden
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/db" },
+    { "path": "apps/core-gateway" }
+  ]
 }

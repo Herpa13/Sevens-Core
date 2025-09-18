@@ -1,0 +1,14 @@
+// packages/shared/tsconfig.json
+{
+  // Hereda las reglas comunes de nuestro archivo base en la raíz
+  "extends": "../../tsconfig.base.json",
+
+  // Define las reglas específicas para este paquete
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+
+  // Le dice a TypeScript qué archivos incluir en la compilación
+  "include": ["src"]
+}

@@ -1,34 +1,88 @@
-# Dependencias
-/node_modules
-**/node_modules
 
-# Yarn Berry
-.yarn/*
-!.yarn/releases/**
-!.yarn/plugins/**
-!.yarn/sdks/**
-!.yarn/versions/**
 
-# Archivos de PnP (solo si NO usas nodeLinker: node-modules)
-.pnp.*
-.pnp.js
 
-# Logs
+# ===================================================================
+# Archivos y carpetas generados por herramientas de Node.js y pnpm
+# ===================================================================
+# Módulos de Node.js. ¡La carpeta más importante a ignorar!
+node_modules/
+
+# Archivos de lock de diferentes gestores de paquetes.
+# Es buena práctica subir el tuyo (pnpm-lock.yaml), pero ignorar los otros.
+package-lock.json
+yarn.lock
+
+# Archivos de log generados por npm o pnpm
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
 pnpm-debug.log*
 
-# IDEs y editores
-.idea/
-.vscode/
-*.swp
-*.swo
+# ===================================================================
+# Archivos compilados de TypeScript y JavaScript
+# ===================================================================
+# Carpeta de salida de la compilación de TypeScript (comúnmente 'dist')
+dist/
+build/
+out/
 
-# Sistema
+# Archivos de caché y temporales
+.tmp/
+*.tsbuildinfo
+
+# ===================================================================
+# Variables de entorno y configuración sensible
+# ===================================================================
+# Nunca subas tus variables de entorno al repositorio.
+.env
+.env.*
+!.env.example  # <-- Excepción: permite subir un archivo de ejemplo.
+
+# ===================================================================
+# Archivos de sistema operativo
+# ===================================================================
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
+# ===================================================================
+# Archivos de configuración de IDEs y editores
+# ===================================================================
+# Visual Studio Code
+.vscode/*
+!.vscode/extensions.json  # <-- Excepción: es útil compartir extensiones recomendadas.
+.history/
 
+# JetBrains (WebStorm, etc.)
+.idea/
 
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# ===================================================================
+# Logs de la aplicación y reportes de tests
+# ===================================================================
+# Archivos de log
+logs/
+*.log
+
+# Reportes de cobertura de tests
+coverage/
+.nyc_output/
+
+# ===================================================================
+# Otros
+# ===================================================================
+# Caché de Vite/Vitest
+.vite/
+node_modules/.vite
