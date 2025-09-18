@@ -7,23 +7,19 @@ phases:
     commands:
       - echo "📦 Instalando pnpm..."
       - npm install -g pnpm
-      - echo "🔧 Configurando Git..."
-      - git config --global user.name "AWS CodeBuild"
-      - git config --global user.email "codebuild@amazon.com"
+      - pnpm config set store-dir /root/.pnpm-store
+      - echo "📦 Instalando dependencias del monorepo..."
+      - pnpm install --frozen-lockfile
   build:
     commands:
-      - echo "🚨 Forzando la actualización del pnpm-lock.yaml..."
-      - pnpm install --no-frozen-lockfile
-      - echo "🔍 Verificando si el lockfile ha cambiado..."
-      # Script corregido para ser compatible con el shell de CodeBuild
-      - |
-        if [ -n "$(git status --porcelain pnpm-lock.yaml)" ]; then
-          echo "⬆️ El pnpm-lock.yaml ha sido modificado. Subiendo cambios al repositorio..."
-          BRANCH_NAME=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///')
-          git add pnpm-lock.yaml
-          git commit -m "chore(ci): actualizar pnpm-lock.yaml desde CodeBuild"
-          git push origin HEAD:$BRANCH_NAME
-          echo "🚀 El archivo pnpm-lock.yaml ha sido actualizado en la rama $BRANCH_NAME."
-        else
-          echo "✅ pnpm-lock.yaml ya está actualizado. No se necesitan cambios."
-        fi
+      - echo "🔨 Compilando todo el monorepo..."
+      - pnpm run build:all
+      - echo "🚀 Desplegando infraestructura con CDK..."
+      - pnpm run cdk:synth
+      - npx cdk deploy CoreStack --require-approval never
+cache:
+  paths:
+    - '/root/.pnpm-store'
+artifacts:
+  files:
+    - '**/*'
