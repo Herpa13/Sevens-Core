@@ -37,6 +37,14 @@
   "prisma": {
     "seed": "node packages/db/prisma/seed.js"
   },
+<<<<<<< HEAD
+=======
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "infra/*"
+  ],
+>>>>>>> 3800e003fba2dbfce62aea755b5e2663630e6944
   "packageManager": "pnpm@9.12.3"
 }
 
