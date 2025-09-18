@@ -13,20 +13,17 @@ phases:
   build:
     commands:
       - echo "🚨 Forzando la actualización del pnpm-lock.yaml..."
-      # Usamos 'pnpm install' sin '--frozen-lockfile' para regenerar el archivo de bloqueo
-      - pnpm install
+      # Añadimos --no-frozen-lockfile para permitir que pnpm modifique el lockfile en un entorno de CI
+      - pnpm install --no-frozen-lockfile
       - echo "🔍 Verificando si el lockfile ha cambiado..."
-      # 'git status --porcelain' mostrará los archivos modificados. Si no hay cambios, salimos.
       - |
-        if [[ -z $(git status --porcelain) ]]; then
+        if [[ -z $(git status --porcelain pnpm-lock.yaml) ]]; then
           echo "✅ pnpm-lock.yaml ya está actualizado. No se necesitan cambios."
         else
           echo "⬆️ El pnpm-lock.yaml ha sido modificado. Subiendo cambios al repositorio..."
-          # Añadimos, hacemos commit y subimos el archivo actualizado
-          # Asegúrate de que CODEBUILD_WEBHOOK_HEAD_REF es correcto (e.g., refs/heads/main)
+          - BRANCH_NAME=${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/}
           - git add pnpm-lock.yaml
           - git commit -m "chore(ci): actualizar pnpm-lock.yaml desde CodeBuild"
-          - git push origin HEAD:${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/}
-          echo "🚀 El archivo pnpm-lock.yaml ha sido actualizado en la rama ${CODEBUILD_WEBHOOK_HEAD_REF#refs/heads/}."
+          - git push origin HEAD:$BRANCH_NAME
+          echo "🚀 El archivo pnpm-lock.yaml ha sido actualizado en la rama $BRANCH_NAME."
         fi
-# No necesitamos las fases de caché ni de artefactos para esta operación
