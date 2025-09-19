@@ -155,7 +155,7 @@ export class CoreStack extends cdk.Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['npm install -g pnpm', 'apt-get update && apt-get install -y jq', 'pnpm install --frozen-lockfile']
+            commands: ['npm install -g pnpm', 'apt-get update && apt-get install -y jq']
           },
           build: {
             commands: [
