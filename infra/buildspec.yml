@@ -18,8 +18,8 @@ phases:
       - pnpm run cdk:synth
       - echo "🚀 Realizando bootstrap del entorno CDK (si es necesario)..."
       - pnpm --filter @sevens/cdk-core exec cdk bootstrap aws://825765392912/eu-west-1
-      - echo "🚀 Desplegando infraestructura con CDK..."
-      - pnpm run cdk:deploy -- CoreStack --require-approval never
+      - echo "🚀 Desplegando infraestructura con CDK sin pedir aprobación..."
+      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never
 cache:
   paths:
     - '/root/.pnpm-store'
