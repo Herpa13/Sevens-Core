@@ -8,21 +8,38 @@ phases:
       - echo "📦 Instalando pnpm..."
       - npm install -g pnpm
       - pnpm config set store-dir /root/.pnpm-store
+      - echo "📦 Instalando jq para procesar JSON..."
+      - apt-get update -y && apt-get install -y jq
       - echo "📦 Instalando dependencias del monorepo..."
       - pnpm install --frozen-lockfile
+      
   build:
     commands:
-      - echo "🔨 Compilando todo el monorepo..."
-      - pnpm run build:all
-      - echo "⚙️ Sintetizando la infraestructura con CDK..."
-      - pnpm run cdk:synth
-      - echo "🚀 Realizando bootstrap del entorno CDK (si es necesario)..."
-      - pnpm --filter @sevens/cdk-core exec cdk bootstrap aws://825765392912/eu-west-1
-      - echo "🚀 Desplegando infraestructura con CDK sin pedir aprobación..."
-      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never
+      # 1. DESPLEGAR INFRAESTRUCTURA
+      - echo "🚀 Desplegando infraestructura con CDK..."
+      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file cdk-outputs.json
+      
+      # 2. MIGRAR BASE DE DATOS
+      - echo "⚙️ Iniciando migración de base de datos..."
+      - export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' cdk-outputs.json)
+      - export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' cdk-outputs.json)
+      - echo "   -> Obteniendo credenciales de la base de datos..."
+      - export DB_SECRET=$(aws secretsmanager get-secret-value --secret-id $DB_SECRET_ARN --query SecretString --output text)
+      - export DB_USER=$(echo $DB_SECRET | jq -r .username)
+      - export DB_PASS=$(echo $DB_SECRET | jq -r .password)
+      - export DATABASE_URL="postgresql://$DB_USER:$DB_PASS@$DATABASE_HOST:5432/postgres"
+      - echo "   -> Ejecutando Prisma Migrate..."
+      - npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+
+      # 3. PUBLICAR FRONTEND
+      - echo "🎨 Iniciando publicación del frontend..."
+      - export FRONTEND_BUCKET=$(jq -r '.CoreStack.FrontendBucketName' cdk-outputs.json)
+      - export VITE_API_BASE=$(jq -r '.CoreStack.ApiUrl' cdk-outputs.json)
+      - echo "   -> Compilando aplicación frontend..."
+      - pnpm run build
+      - echo "   -> Sincronizando archivos con S3..."
+      - aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete
+
 cache:
   paths:
     - '/root/.pnpm-store'
-artifacts:
-  files:
-    - '**/*'
