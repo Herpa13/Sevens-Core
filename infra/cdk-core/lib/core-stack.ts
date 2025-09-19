@@ -23,6 +23,7 @@ export class CoreStack extends cdk.Stack {
     });
 
     const lambdaSg = new ec2.SecurityGroup(this, 'CoreLambdaSg', { vpc });
+    lambdaSg.connections.allowTo(proxy, ec2.Port.tcp(5432), 'Allow outbound to DB Proxy');
     const dbSg = new ec2.SecurityGroup(this, 'CoreDbSg', { vpc });
     const proxySg = new ec2.SecurityGroup(this, 'CoreProxySg', { vpc });
 
