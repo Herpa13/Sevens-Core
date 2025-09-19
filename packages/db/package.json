@@ -9,7 +9,7 @@
     "@sevens/shared": "workspace:*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc --build --force tsconfig.json"
   },
   "devDependencies": {
     "typescript": "~5.8.2"

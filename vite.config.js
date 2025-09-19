@@ -1,21 +1,28 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-// vitest.config.ts
-const config_1 = require("vitest/config");
-const vite_tsconfig_paths_1 = __importDefault(require("vite-tsconfig-paths"));
-exports.default = (0, config_1.defineConfig)({
+const { defineConfig } = require("vitest/config");
+const react = require("@vitejs/plugin-react").default;
+const tsconfigPaths = require("vite-tsconfig-paths").default;
+
+module.exports = defineConfig({
     plugins: [
-        // CAMBIA ESTA LÍNEA:
-        // tsconfigPaths(),
-        // POR ESTA OTRA (con tres puntos delante):
-        ...(0, vite_tsconfig_paths_1.default)(),
+        react({
+            include: ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
+        }),
+        tsconfigPaths(),
     ],
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.cjs', '.json'],
+    },
+    esbuild: {
+        loader: 'tsx',
+        include: [/\.tsx?$/, /\.jsx?$/],
+    },
     test: {
         globals: true,
         environment: 'node',
         include: ['tests/**/*.test.ts'],
+    },
+    ssr: {
+        noExternal: [/@nestjs\/.*/, 'fastify'],
     },
 });
