@@ -25,15 +25,15 @@ phases:
       
       # 3. MIGRAR BASE DE DATOS
       - echo "⚙️ Iniciando migración de base de datos..."
-      - export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' infra/cdk-core/cdk-outputs.json)
-      - export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' infra/cdk-core/cdk-outputs.json)
-      - echo "   -> Obteniendo credenciales de la base de datos..."
-      - echo "DB_SECRET_ARN: $DB_SECRET_ARN"
+      - 'export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' infra/cdk-core/cdk-outputs.json)'
+      - 'export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' infra/cdk-core/cdk-outputs.json)'
+      - 'echo "   -> Obteniendo credenciales de la base de datos..."'
+      - 'echo "DB_SECRET_ARN: $DB_SECRET_ARN"'
       - 'export DB_SECRET=$(aws secretsmanager get-secret-value --secret-id $DB_SECRET_ARN --query SecretString --output text)'
-      - echo "DB_SECRET: $DB_SECRET"
-      - export DB_USER=$(echo $DB_SECRET | jq -r .username)
-      - export DB_PASS=$(echo $DB_SECRET | jq -r .password)
-      - export DATABASE_URL="postgresql://$DB_USER:$DB_PASS@$DATABASE_HOST:5432/postgres"
+      - 'echo "DB_SECRET: $DB_SECRET"'
+      - 'export DB_USER=$(echo $DB_SECRET | jq -r .username)'
+      - 'export DB_PASS=$(echo $DB_SECRET | jq -r .password)'
+      - 'export DATABASE_URL="postgresql://$DB_USER:$DB_PASS@$DATABASE_HOST:5432/postgres"'
       - echo "   -> Ejecutando Prisma Migrate..."
       - npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 
