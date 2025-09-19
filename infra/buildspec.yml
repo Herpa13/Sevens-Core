@@ -15,11 +15,15 @@ phases:
       
   build:
     commands:
-      # 1. DESPLEGAR INFRAESTRUCTURA
+      # 1. COMPILAR TODO EL CÓDIGO
+      - echo "🔨 Compilando todo el código del monorepo (frontend y backend)..."
+      - pnpm run build
+
+      # 2. DESPLEGAR INFRAESTRUCTURA
       - echo "🚀 Desplegando infraestructura con CDK..."
       - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file cdk-outputs.json
       
-      # 2. MIGRAR BASE DE DATOS
+      # 3. MIGRAR BASE DE DATOS
       - echo "⚙️ Iniciando migración de base de datos..."
       - export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' cdk-outputs.json)
       - export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' cdk-outputs.json)
@@ -31,13 +35,10 @@ phases:
       - echo "   -> Ejecutando Prisma Migrate..."
       - npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 
-      # 3. PUBLICAR FRONTEND
+      # 4. PUBLICAR FRONTEND
       - echo "🎨 Iniciando publicación del frontend..."
       - export FRONTEND_BUCKET=$(jq -r '.CoreStack.FrontendBucketName' cdk-outputs.json)
-      - export VITE_API_BASE=$(jq -r '.CoreStack.ApiUrl' cdk-outputs.json)
-      - echo "   -> Compilando aplicación frontend..."
-      - pnpm run build
-      - echo "   -> Sincronizando archivos con S3..."
+      - echo "   -> Sincronizando archivos con S3 (la compilación ya se hizo)..."
       - aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete
 
 cache:
