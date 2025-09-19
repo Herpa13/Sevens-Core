@@ -21,7 +21,7 @@ phases:
 
       # 2. DESPLEGAR INFRAESTRUCTURA
       - echo "🚀 Desplegando infraestructura con CDK..."
-      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file infra/cdk-core/cdk-outputs.json
+      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file cdk-outputs.json
       
       # 3. MIGRAR BASE DE DATOS
       - echo "⚙️ Iniciando migración de base de datos..."
