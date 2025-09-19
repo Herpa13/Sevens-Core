@@ -14,9 +14,12 @@ phases:
     commands:
       - echo "🔨 Compilando todo el monorepo..."
       - pnpm run build:all
-      - echo "🚀 Desplegando infraestructura con CDK..."
+      - echo "⚙️ Sintetizando la infraestructura con CDK..."
       - pnpm run cdk:synth
-      - npx cdk deploy CoreStack --require-approval never
+      - echo "🚀 Realizando bootstrap del entorno CDK (si es necesario)..."
+      - pnpm --filter @sevens/cdk-core exec cdk bootstrap aws://825765392912/eu-west-1
+      - echo "🚀 Desplegando infraestructura con CDK sin pedir aprobación..."
+      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never
 cache:
   paths:
     - '/root/.pnpm-store'
