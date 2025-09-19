@@ -16,7 +16,7 @@ phases:
       - pnpm run build:all
       - echo "🚀 Desplegando infraestructura con CDK..."
       - pnpm run cdk:synth
-      - npx cdk deploy CoreStack --require-approval never
+      - pnpm run cdk:deploy -- CoreStack --require-approval never
 cache:
   paths:
     - '/root/.pnpm-store'
