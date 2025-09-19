@@ -236,6 +236,7 @@ export class CoreStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'RdsProxyEndpoint', { value: proxy.endpoint });
     new cdk.CfnOutput(this, 'QueueArn', { value: queue.queueArn });
     new cdk.CfnOutput(this, 'BucketArn', { value: bucket.bucketArn });
+    new cdk.CfnOutput(this, 'DbSecretArn', { value: dbSecret.secretArn });
     new cdk.CfnOutput(this, 'DbMigrateProjectName', { value: dbMigrate.projectName });
     new cdk.CfnOutput(this, 'OpenApiUrl', { value: `https://${openApiDistribution.domainName}/openapi.json` });
     new cdk.CfnOutput(this, 'OpenApiPublishProjectName', { value: openApiPublish.projectName });
