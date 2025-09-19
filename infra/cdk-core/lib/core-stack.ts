@@ -118,7 +118,9 @@ export class CoreStack extends cdk.Stack {
     const openApiBucket = new s3.Bucket(this, 'OpenApiBucket', { versioned: true });
 
     const openApiDistribution = new cloudfront.Distribution(this, 'OpenApiDistribution', {
-      defaultBehavior: { origin: new origins.S3Origin(openApiBucket) },
+      defaultBehavior: {
+        origin: origins.S3BucketOrigin.withBucketDefaults(openApiBucket),
+      },
     });
 
     const frontendBucket = new s3.Bucket(this, 'FrontendBucket', {
@@ -127,7 +129,7 @@ export class CoreStack extends cdk.Stack {
 
     const frontendDistribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
       defaultBehavior: {
-        origin: new origins.S3Origin(frontendBucket),
+        origin: new origins.S3StaticWebsiteOrigin(frontendBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
       },
       defaultRootObject: 'index.html',
