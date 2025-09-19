@@ -25,6 +25,7 @@ export class CoreStack extends cdk.Stack {
     const lambdaSg = new ec2.SecurityGroup(this, 'CoreLambdaSg', { vpc });
     const dbSg = new ec2.SecurityGroup(this, 'CoreDbSg', { vpc });
     const proxySg = new ec2.SecurityGroup(this, 'CoreProxySg', { vpc });
+    proxySg.addIngressRule(lambdaSg, ec2.Port.tcp(5432), 'Allow inbound from Lambda SG to DB Proxy');
 
     // VPC Endpoints
     vpc.addGatewayEndpoint('S3Endpoint', {
