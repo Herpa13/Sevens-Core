@@ -154,7 +154,7 @@ export class CoreStack extends cdk.Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['yum install -y jq', 'pnpm install --frozen-lockfile']
+            commands: ['npm install -g pnpm', 'yum install -y jq', 'pnpm install --frozen-lockfile']
           },
           build: {
             commands: [
@@ -186,7 +186,7 @@ export class CoreStack extends cdk.Stack {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          install: { commands: ['pnpm install --frozen-lockfile'] },
+          install: { commands: ['npm install -g pnpm', 'pnpm install --frozen-lockfile'] },
           build: {
             commands: [
               'pnpm --filter @sevens/core-gateway run openapi',
@@ -215,7 +215,7 @@ export class CoreStack extends cdk.Stack {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          install: { commands: ['pnpm install --frozen-lockfile'] },
+          install: { commands: ['npm install -g pnpm', 'pnpm install --frozen-lockfile'] },
           build: {
             commands: [
               'pnpm run build',
