@@ -125,9 +125,11 @@ export class CoreStack extends cdk.Stack {
 
     const frontendBucket = new s3.Bucket(this, 'FrontendBucket');
 
+    const oai = new cloudfront.OriginAccessIdentity(this, 'FrontendOAI');
+
     const frontendDistribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
       defaultBehavior: {
-        origin: new origins.S3StaticWebsiteOrigin(frontendBucket),
+        origin: new origins.S3Origin(frontendBucket, { originAccessIdentity: oai }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
       },
       defaultRootObject: 'index.html',
