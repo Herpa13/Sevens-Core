@@ -121,9 +121,7 @@ export class CoreStack extends cdk.Stack {
       defaultBehavior: { origin: new origins.S3Origin(openApiBucket) },
     });
 
-    const frontendBucket = new s3.Bucket(this, 'FrontendBucket', {
-      websiteIndexDocument: 'index.html',
-    });
+    const frontendBucket = new s3.Bucket(this, 'FrontendBucket');
 
     const frontendDistribution = new cloudfront.Distribution(this, 'FrontendDistribution', {
       defaultBehavior: {
