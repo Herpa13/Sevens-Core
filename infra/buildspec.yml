@@ -21,12 +21,12 @@ phases:
 
       # 2. DESPLEGAR INFRAESTRUCTURA
       - echo "🚀 Desplegando infraestructura con CDK..."
-      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file cdk-outputs.json
+      - pnpm --filter @sevens/cdk-core exec cdk deploy CoreStack --require-approval never --outputs-file infra/cdk-core/cdk-outputs.json
       
       # 3. MIGRAR BASE DE DATOS
       - echo "⚙️ Iniciando migración de base de datos..."
-      - export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' cdk-outputs.json)
-      - export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' cdk-outputs.json)
+      - export DB_SECRET_ARN=$(jq -r '.CoreStack.DbSecretArn' infra/cdk-core/cdk-outputs.json)
+      - export DATABASE_HOST=$(jq -r '.CoreStack.RdsProxyEndpoint' infra/cdk-core/cdk-outputs.json)
       - echo "   -> Obteniendo credenciales de la base de datos..."
       - export DB_SECRET=$(aws secretsmanager get-secret-value --secret-id $DB_SECRET_ARN --query SecretString --output text)
       - export DB_USER=$(echo $DB_SECRET | jq -r .username)
@@ -37,7 +37,7 @@ phases:
 
       # 4. PUBLICAR FRONTEND
       - echo "🎨 Iniciando publicación del frontend..."
-      - export FRONTEND_BUCKET=$(jq -r '.CoreStack.FrontendBucketName' cdk-outputs.json)
+      - export FRONTEND_BUCKET=$(jq -r '.CoreStack.FrontendBucketName' infra/cdk-core/cdk-outputs.json)
       - echo "   -> Sincronizando archivos con S3 (la compilación ya se hizo)..."
       - aws s3 sync dist s3://$FRONTEND_BUCKET/ --delete
 
