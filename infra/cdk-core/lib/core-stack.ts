@@ -146,12 +146,6 @@ export class CoreStack extends cdk.Stack {
       vpc,
       securityGroups: [lambdaSg],
       subnetSelection: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
-      // Ensure DNS resolution within the VPC
-      vpcConfig: {
-        vpcId: vpc.vpcId,
-        subnets: vpc.privateSubnets.map(subnet => subnet.subnetId),
-        securityGroupIds: [lambdaSg.securityGroupId],
-      },
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         computeType: codebuild.ComputeType.SMALL
