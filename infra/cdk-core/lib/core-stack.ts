@@ -241,5 +241,6 @@ export class CoreStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'OpenApiPublishProjectName', { value: openApiPublish.projectName });
     new cdk.CfnOutput(this, 'FrontendUrl', { value: `https://${frontendDistribution.domainName}` });
     new cdk.CfnOutput(this, 'FrontendPublishProjectName', { value: frontendPublish.projectName });
+    new cdk.CfnOutput(this, 'FrontendBucketName', { value: frontendBucket.bucketName });
   }
 }
