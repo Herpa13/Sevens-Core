@@ -27,7 +27,8 @@
     "cdk:synth": "pnpm --filter @sevens/cdk-core cdk synth",
     "cdk:deploy": "pnpm --filter @sevens/cdk-core cdk deploy",
     "pretest": "pnpm run build:packages",
-    "pretest:e2e": "pnpm run build:packages"
+    "pretest:e2e": "pnpm run build:packages",
+    "build:all": "pnpm run build"
   },
   "dependencies": {
     "@fastify/aws-lambda": "^4.1.0",
